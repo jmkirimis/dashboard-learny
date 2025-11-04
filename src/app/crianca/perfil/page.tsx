@@ -27,6 +27,7 @@ export default function Perfil() {
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
   const [audio, setAudio] = useState(false);
+  const [pontos, setPontos] = useState(0);
   const [ranking, setRanking] = useState(false);
   const [selectedInput, setSelectedInput] = useState<string | null>(null);
   const [modalAberto, setModalAberto] = useState(false);
@@ -142,6 +143,7 @@ export default function Perfil() {
         setNome(result.nome);
         setAudio(result.audio);
         setRanking(result.ranking);
+        setPontos(result.pontos);
       } else {
         if (result.status === 404) return
         setErroFetch(true);
@@ -222,7 +224,7 @@ export default function Perfil() {
                 <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
                   {nomePerfil}
                 </span>
-                <span className="text-[#4c4c4c]">Lv. <span className="font-bold text-lg">100</span></span>
+                <span className="text-[#4c4c4c]">Lv. <span className="font-bold text-lg">{Math.floor(pontos / 100)}</span></span>
               </div>
               {modalAberto ? (
                 <div
@@ -253,7 +255,7 @@ export default function Perfil() {
               )}
             </div>
 
-            <BarraXP />
+            <BarraXP pontos={pontos} />
 
             <div className="flex flex-col gap-3">
               <CustomInput

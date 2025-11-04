@@ -62,7 +62,7 @@ export default function Navbar() {
           {isOpen ? (
             <div className={`flex flex-col items-center mb-4`}>
               <div
-                className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-contain bg-no-repeat rounded-lg mb-4"
+                className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-cover bg-center bg-no-repeat rounded-lg mb-4"
                 style={{
                   backgroundImage: `url(${foto || "/images/pai.png"})`,
                 }}

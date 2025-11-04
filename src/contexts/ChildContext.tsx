@@ -36,12 +36,6 @@ export function ChildProvider({ children }: { children: ReactNode }) {
     else localStorage.removeItem("child");
   }, [child]);
 
-  useEffect(() => {
-    if (!user) {
-      setChild(null); // limpa automaticamente quando o usuário some
-    }
-  }, [user]);
-
   return (
     <ChildContext.Provider value={{ child, setChild }}>
       {children}

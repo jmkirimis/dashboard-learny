@@ -212,7 +212,7 @@ export default function Cadastro() {
         <div className="flex flex-col w-4/5 gap-3">
           <CustomInput label="Usuário" value={usuario} onChange={(e) => setUsuario(e.target.value)} transparent />
           <CustomInput label="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} isPassword transparent />
-          <CustomInput label="Email" value={email} onChange={(e) => setEmail(e.target.value)} transparent />
+          {tipo == "pais" && <CustomInput label="Email" value={email} onChange={(e) => setEmail(e.target.value)} transparent />}
           <CustomInput label="Nome" value={nome} onChange={(e) => setNome(e.target.value)} transparent />
           <div className="flex items-center justify-between px-2 pr-8 py-2 w-full h-16 bg-[rgba(255,255,255,0.3)] rounded-md">
             <DatePickerBR value={dataNasc} onChange={(novaData) => setDataNasc(novaData)} />

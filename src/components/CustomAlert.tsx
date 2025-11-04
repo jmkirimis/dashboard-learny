@@ -19,8 +19,13 @@ export default function CustomAlert({ icon, title, message, visible }: Props) {
         ${visible ? "translate-x-0" : "translate-x-full"}
       `}
     >
-      <div className="flex gap-4">
-        <Image src={icon} alt="icon alerta" width={50} height={50} />
+      <div className="flex gap-4 items-center">
+        <div
+          className="w-20 h-20 bg-contain bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${icon || "/icons/sucesso.png"})`,
+          }}
+        />
         <div className="flex flex-col justify-center text-[#4c4c4c]">
           <span className="font-semibold text-lg">{title}</span>
           <span>{message}</span>

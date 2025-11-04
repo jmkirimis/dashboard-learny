@@ -140,7 +140,7 @@ export default function ContainerFilhos({
     <div
       ref={containerRef}
       onClick={(e) => e.stopPropagation()}
-      className="flex flex-col items-center justify-center absolute left-56 w-80 top-28 min-h-28 rounded-2xl p-0.5 bg-white shadow-[0_0_12px_rgba(150,150,150,0.7)] z-50"
+      className="flex flex-col items-center justify-center absolute left-56 w-80 top-24 min-h-28 rounded-2xl p-0.5 bg-white shadow-[0_0_12px_rgba(150,150,150,0.7)] z-50"
     >
       {loading ? (
         <LoadingComponent />
@@ -209,7 +209,7 @@ export default function ContainerFilhos({
                         className="flex items-center w-full gap-4 px-4 py-2 mb-2 rounded-lg hover:cursor-pointer hover:bg-zinc-400 transition"
                       >
                         <div
-                          className="w-14 h-14 rounded-full bg-cover bg-center bg-no-repeat"
+                          className="w-12 h-12 rounded-full bg-cover bg-center bg-no-repeat"
                           style={{
                             backgroundImage: `url(${
                               filho.foto || "/images/avatar.png"

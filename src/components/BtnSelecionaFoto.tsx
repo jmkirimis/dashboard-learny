@@ -84,7 +84,7 @@ export default function BtnSelecionaFoto({
       ) : (
         <button onClick={handleClick} className="hover:cursor-pointer">
           <div
-            className="w-28 h-28 mb-4 rounded-lg bg-cover bg-center bg-no-repeat"
+            className="w-32 h-32 mb-4 rounded-lg bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${image || "/images/camera.png"})` }}
           />
         </button>

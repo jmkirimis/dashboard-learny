@@ -79,7 +79,7 @@ export default function Home() {
       },
     });
 
-    if (result && !result.error) {
+    if (result && !result.error && result.tipo === "pai") {
       await Cookies.set("token", result.access_token);
       setUser({
         id: result.id,

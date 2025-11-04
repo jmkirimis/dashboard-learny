@@ -50,6 +50,21 @@ type MedalhaProps = {
   text: string;
 };
 
+type MedalhaItem = {
+  _id: string;
+  nome: string;
+  descricao: string;
+  mundo: number;
+  dataConquista: string;
+};
+
+// Mapa de cores baseado no nome da medalha
+const coresMedalha: Record<string, string> = {
+  "Iniciando!": "#80D25B",    // azul
+  "A todo o vapor!": "#EF5B6A", // dourado
+  "Desvendando!": "#6CD2FF",   // prata
+};
+
 const DashboardItem = ({
   width,
   text,
@@ -204,7 +219,7 @@ export default function Dashboard() {
               <span className="font-bold text-xl">
                 {nomeCrianca}
               </span>
-              <BarraXP />
+              <BarraXP pontos={pontos} />
           </div>
 
           {/* Linha inicial de itens do dashboard */}
@@ -212,7 +227,7 @@ export default function Dashboard() {
             <DashboardItem
               width={"36%"}
               text="Atividades vistas (dia)"
-              number={pontos}
+              number={fasesConcluidas}
               icon="atividade.png"
               color="#EF5B6A"
             />
@@ -226,7 +241,7 @@ export default function Dashboard() {
             <DashboardItem
               width={"20%"}
               text="Conquistas"
-              number={5}
+              number={medalhas?.length || 0}
               icon="trofeu.png"
               color="#80D25B"
             />
@@ -263,11 +278,13 @@ export default function Dashboard() {
             {/* Medalhas */}
             <div className="flex flex-col w-[62%] items-center gap-3 h-full rounded-2xl py-6 px-12 bg-white shadow-[inset_0_0_10px_rgba(0,0,0,0.3)]">
               <span className="font-bold text-[#4c4c4c] mb-2">Conquistas</span>
-              <Medalha color="#6CD2FF" text="Medalha de pontualidade" />
-              <Medalha color="#EF5B6A" text="Medalha de disciplina" />
-              <Medalha color="#C15A36" text="Medalha de pontuação" />
-              <Medalha color="#B7B8BA" text="Medalha de ranking" />
-              <Medalha color="#EDBB0C" text="Medalha de conclusão" />
+              {medalhas.map((item: MedalhaItem, index) => (
+                  <Medalha
+                    key={item._id} // melhor usar _id como key
+                    color={coresMedalha[item.nome] || "#6CD2FF"} // cor padrão caso não encontre
+                    text={item.nome}
+                  />
+                ))}
             </div>
           </div>
         </div>
