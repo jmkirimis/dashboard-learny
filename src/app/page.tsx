@@ -79,17 +79,19 @@ export default function Home() {
       },
     });
 
+    console.log(result)
+
     if (result && !result.error && result.tipo === "pai") {
       await Cookies.set("token", result.access_token);
       setUser({
-        id: result.id,
-        foto: result.foto,
-        usuario: result.usuario,
-        nome: result.nome,
-        email: result.email,
-        filhos: result.filhos,
-        filhoSelecionado: result.filhoSelecionado,
-        token: result.token,
+        id: result.user.id,
+        foto: result.user.foto,
+        usuario: result.user.usuario,
+        nome: result.user.nome,
+        email: result.user.email,
+        filhos: result.user.filhos,
+        filhoSelecionado: result.user.filhoSelecionado,
+        token: result.access_token,
       });
       salvarFilhoSelecionado();
       router.push("/dashboard");
