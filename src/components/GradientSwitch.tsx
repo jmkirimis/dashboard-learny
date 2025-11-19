@@ -11,6 +11,7 @@ export default function GradientSwitch({enabled, onClick}: Props) {
       className={`
         w-13 h-7 rounded-full p-1 transition-all duration-300
         flex items-center
+        hover:cursor-pointer
         ${enabled 
           ? "bg-linear-to-r from-[#d96172] to-[#81c0e8]" 
           : "bg-linear-to-r from-[#417f99] to-[#7c4856]"

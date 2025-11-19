@@ -76,7 +76,7 @@ export default function BtnSelecionaFoto({
           onClick={handleClick}
           className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-cover bg-center bg-no-repeat rounded-lg hover:cursor-pointer"
           style={{
-            backgroundImage: `url(${image || "/images/pai.png"})`,
+            backgroundImage: `url(${image || "/images/user.png"})`,
           }}
         >
           <div className="w-8 h-8 bg-[url('/icons/editar.png')] bg-contain bg-no-repeat rounded-full" />

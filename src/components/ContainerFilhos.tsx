@@ -46,6 +46,8 @@ export default function ContainerFilhos({
   const { showAlert } = useCustomAlert();
   const { loading, request } = useApi();
   const { setChild } = useChild();
+  const [loadingFilhos, setLoadingFilhos] = useState(true);
+  const [loadingSelecionado, setLoadingSelecionado] = useState(true);
   const [filhos, setFilhos] = useState<Filho[]>([]);
   const [filhoSelecionado, setFilhoSelecionado] = useState<Filho | null>(null);
   const [erroFetch, setErroFetch] = useState(false);
@@ -98,6 +100,7 @@ export default function ContainerFilhos({
   useEffect(() => {
     if (erroFetch) return;
     const carregarFilhos = async () => {
+      setLoadingFilhos(true);
       const result = await request({
         endpoint: "/api/criancas",
         method: "GET",
@@ -113,8 +116,10 @@ export default function ContainerFilhos({
           message: result.message || "Ocorreu um erro ao carregar os filhos",
         });
       }
+      setLoadingFilhos(false);
     };
     const carregarFilhoSelecionado = async () => {
+      setLoadingSelecionado(true);
       const result = await request({
         endpoint: "/api/filhoSelecionado",
         method: "GET",
@@ -131,6 +136,7 @@ export default function ContainerFilhos({
             result.message || "Ocorreu um erro ao carregar o filho selecionado",
         });
       }
+      setLoadingSelecionado(false);
     };
     carregarFilhos();
     carregarFilhoSelecionado();
@@ -142,7 +148,7 @@ export default function ContainerFilhos({
       onClick={(e) => e.stopPropagation()}
       className="flex flex-col items-center justify-center absolute left-56 w-80 top-24 min-h-28 rounded-2xl p-0.5 bg-white shadow-[0_0_12px_rgba(150,150,150,0.7)] z-50"
     >
-      {loading ? (
+      {loading || loadingFilhos || loadingSelecionado ? (
         <LoadingComponent />
       ) : (
         <div className="bg-white/10 rounded-2xl p-3 w-80">
@@ -192,7 +198,7 @@ export default function ContainerFilhos({
                   >
                     <Image
                       src="/icons/engrenagem.png"
-                      alt="editar"
+                      alt="Editar"
                       width={35}
                       height={35}
                     />
@@ -235,10 +241,6 @@ export default function ContainerFilhos({
                   </button>
                 </div>
               </div>
-            )}
-
-            {loading && (
-              <p className="text-white text-sm mt-2">Carregando...</p>
             )}
           </div>
         </div>

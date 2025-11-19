@@ -12,7 +12,7 @@ export default function Configuracoes() {
       {/* Logo */}
       <Image
         src="/images/logo-com-contorno.png"
-        alt="Criança"
+        alt="Logo"
         width={60}
         height={60}
         className="absolute right-14 top-6"

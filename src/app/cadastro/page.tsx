@@ -46,7 +46,7 @@ const LinhaProgresso = ({ step }: LinhaProgressoProps) => {
     <div className="flex relative flex-col justify-center items w-full h-28 px-12 gap-2 bg-[#4c4c4c] rounded-md text-white shrink-0">
       <Image
         src="/images/logo-com-contorno.png"
-        alt="Criança"
+        alt="Logo"
         width={48}
         height={48}
         className="absolute right-0 top-0"

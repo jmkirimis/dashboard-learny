@@ -21,6 +21,7 @@ export default function Perfil() {
   const { request } = useApi();
   const { showAlert } = useCustomAlert();
   const id = searchParams.get("id");
+  const [loading, setLoading] = useState(true);
   const [foto, setFoto] = useState<string | null>("");
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuario, setUsuario] = useState("");
@@ -131,6 +132,7 @@ export default function Perfil() {
     if (!id || erroFetch) return;
 
     const fetchFilho = async () => {
+      setLoading(true);
       const result = await request({
         endpoint: `/api/crianca/${id}`,
         method: "GET",
@@ -153,6 +155,7 @@ export default function Perfil() {
           message: result.message || "Erro desconhecido ao carregar filho",
         });
       }
+      setLoading(false);
     };
 
     fetchFilho();
@@ -205,155 +208,167 @@ export default function Perfil() {
       {/* Logo */}
       <Image
         src="/images/logo-com-contorno.png"
-        alt="Criança"
+        alt="Logo"
         width={60}
         height={60}
         className="absolute right-14 top-6"
       />
 
       <main className="flex-1 flex flex-col bg-white py-6 text-zinc-800 font-montserrat">
-        <div className="flex w-full h-screen items-center justify-center px-14 gap-20 overflow-hidden">
-          <div className="flex flex-col w-1/3 gap-4">
-            <div className={`flex relative items-center gap-4`}>
-              <BtnSelecionaFoto
-                type="edit"
-                image={foto}
-                onChange={(novaImagem: string | null) => setFoto(novaImagem)}
-              />
-              <div className="flex flex-col gap-1">
-                <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
-                  {nomePerfil}
-                </span>
-                <span className="text-[#4c4c4c]">Lv. <span className="font-bold text-lg">{Math.floor(pontos / 100)}</span></span>
-              </div>
-              {modalAberto ? (
-                <div
-                  className="flex flex-col absolute right-0 top-0 items-end w-[55%] py-2 px-3 gap-2 bg-white shadow-[0_0_4px_rgba(150,150,150,0.3)]"
-                  onClick={() => setModalAberto(!modalAberto)}
-                >
-                  <IoMdClose
-                    size={30}
-                    className="text-[#4c4c4c] hover:cursor-pointer rounded-lg hover:bg-[#ededed]"
-                  />
-                  <CustomButton
-                    text="Excluir Perfil"
-                    color="#4c4c4c"
-                    onClick={handleDelete}
-                  />
+        { loading ? 
+          <div className="flex items-center justify-center h-full">
+            <Image
+              src="/gifs/loading.gif"
+              alt="Loading"
+              width={200}
+              height={200}
+              unoptimized
+            />
+          </div> : 
+          (
+          <div className="flex w-full h-screen items-center justify-center px-14 gap-20 overflow-hidden">
+            <div className="flex flex-col w-1/3 gap-4">
+              <div className={`flex relative items-center gap-4`}>
+                <BtnSelecionaFoto
+                  type="edit"
+                  image={foto}
+                  onChange={(novaImagem: string | null) => setFoto(novaImagem)}
+                />
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
+                    {nomePerfil}
+                  </span>
+                  <span className="text-[#4c4c4c]">Lv. <span className="font-bold text-lg">{Math.floor(pontos / 100)}</span></span>
                 </div>
-              ) : (
-                <div
-                  className=" absolute right-0 top-0 py-2 px-3"
-                  onClick={() => setModalAberto(!modalAberto)}
-                >
-                  <BsThreeDots
-                    size={30}
-                    color="#4c4c4c"
-                    className="hover:cursor-pointer"
-                  />
-                </div>
-              )}
-            </div>
-
-            <BarraXP pontos={pontos} />
-
-            <div className="flex flex-col gap-3">
-              <CustomInput
-                label="Usuário"
-                value={usuario || ""}
-                onChange={(e) => setUsuario(e.target.value)}
-                disabled={!editando}
-                selected={selectedInput === "usuario"}
-                onClick={() => setSelectedInput("usuario")}
-              />
-
-              <CustomInput
-                label="Senha"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                disabled={!editando}
-                selected={selectedInput === "senha"}
-                onClick={() => setSelectedInput("senha")}
-              />
-
-              <CustomInput
-                label="Nome"
-                value={nome || ""}
-                onChange={(e) => setNome(e.target.value)}
-                disabled={!editando}
-                selected={selectedInput === "nome"}
-                onClick={() => setSelectedInput("nome")}
-              />
-              <div className="flex">
-                {!editando ? (
-                  <CustomButton
-                    icon="lapis.png"
-                    text="Alterar Perfil"
-                    color="#FFB300"
-                    onClick={() => setEditando(!editando)}
-                  />
-                ) : (
-                  <div className="w-full flex justify-between gap-4">
-                    <CustomButton
-                      icon="confirmar.png"
-                      text="Confirmar"
-                      color="#80D25B"
-                      onClick={() => {
-                        handleEdit();
-                      }}
+                {modalAberto ? (
+                  <div
+                    className="flex flex-col absolute right-0 top-0 items-end w-[55%] py-2 px-3 gap-2 bg-white shadow-[0_0_4px_rgba(150,150,150,0.3)]"
+                    onClick={() => setModalAberto(!modalAberto)}
+                  >
+                    <IoMdClose
+                      size={30}
+                      className="text-[#4c4c4c] hover:cursor-pointer rounded-lg hover:bg-[#ededed]"
                     />
                     <CustomButton
-                      icon="cancelar.png"
-                      text="Cancelar"
-                      color="#C92939"
-                      onClick={() => {
-                        setEditando(!editando);
-                        setSelectedInput("");
-                      }}
+                      text="Excluir Perfil"
+                      color="#4c4c4c"
+                      onClick={handleDelete}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    className=" absolute right-0 top-0 py-2 px-3"
+                    onClick={() => setModalAberto(!modalAberto)}
+                  >
+                    <BsThreeDots
+                      size={30}
+                      color="#4c4c4c"
+                      className="hover:cursor-pointer"
                     />
                   </div>
                 )}
               </div>
+
+              <BarraXP pontos={pontos} />
+
+              <div className="flex flex-col gap-3">
+                <CustomInput
+                  label="Usuário"
+                  value={usuario || ""}
+                  onChange={(e) => setUsuario(e.target.value)}
+                  disabled={!editando}
+                  selected={selectedInput === "usuario"}
+                  onClick={() => setSelectedInput("usuario")}
+                />
+
+                <CustomInput
+                  label="Senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  disabled={!editando}
+                  selected={selectedInput === "senha"}
+                  onClick={() => setSelectedInput("senha")}
+                />
+
+                <CustomInput
+                  label="Nome"
+                  value={nome || ""}
+                  onChange={(e) => setNome(e.target.value)}
+                  disabled={!editando}
+                  selected={selectedInput === "nome"}
+                  onClick={() => setSelectedInput("nome")}
+                />
+                <div className="flex">
+                  {!editando ? (
+                    <CustomButton
+                      icon="lapis.png"
+                      text="Alterar Perfil"
+                      color="#FFB300"
+                      onClick={() => setEditando(!editando)}
+                    />
+                  ) : (
+                    <div className="w-full flex justify-between gap-4">
+                      <CustomButton
+                        icon="confirmar.png"
+                        text="Confirmar"
+                        color="#80D25B"
+                        onClick={() => {
+                          handleEdit();
+                        }}
+                      />
+                      <CustomButton
+                        icon="cancelar.png"
+                        text="Cancelar"
+                        color="#C92939"
+                        onClick={() => {
+                          setEditando(!editando);
+                          setSelectedInput("");
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col w-2/5 items-center">
+              <div className="w-2/3">
+                <SwitchRanking />
+              </div>
+              <div className="flex flex-col w-full rounded-2xl px-6 py-12 mt-12 gap-4 items-center justify-center bg-white shadow-[0_0_6px_rgba(150,150,150,0.6)]">
+                <div className="flex w-4/5 gap-4 items-center mb-6">
+                  <div className="w-10 h-10 bg-[url('/icons/acessibilidade.png')] bg-contain bg-no-repeat" />
+                  <span className="font-bold bg-linear-to-r from-[#8f6579] to-[#519ebf] bg-clip-text text-transparent">
+                    Acessibilidade
+                  </span>
+                </div>
+                <div className="flex w-4/5 flex-col gap-6">
+                  <div className="flex w-full items-center justify-between">
+                    <span className="font-medium text-zinc-400">
+                      Desativar áudio
+                    </span>
+                    <GradientSwitch
+                      enabled={audio}
+                      onClick={() => handleChangeStatus("audio", !audio)}
+                    />
+                  </div>
+
+                  <div className="flex w-full items-center justify-between">
+                    <span className="font-medium text-zinc-400">Mudar cores</span>
+                    <GradientSwitch />
+                  </div>
+
+                  <div className="flex w-full items-center justify-between">
+                    <span className="font-medium text-zinc-400">
+                      Retirar animações
+                    </span>
+                    <GradientSwitch />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="flex flex-col w-2/5 items-center">
-            <div className="w-2/3">
-              <SwitchRanking />
-            </div>
-            <div className="flex flex-col w-full rounded-2xl px-6 py-12 mt-12 gap-4 items-center justify-center bg-white shadow-[0_0_6px_rgba(150,150,150,0.6)]">
-              <div className="flex w-4/5 gap-4 items-center mb-6">
-                <div className="w-10 h-10 bg-[url('/icons/acessibilidade.png')] bg-contain bg-no-repeat" />
-                <span className="font-bold bg-linear-to-r from-[#8f6579] to-[#519ebf] bg-clip-text text-transparent">
-                  Acessibilidade
-                </span>
-              </div>
-              <div className="flex w-4/5 flex-col gap-6">
-                <div className="flex w-full items-center justify-between">
-                  <span className="font-medium text-zinc-400">
-                    Desativar áudio
-                  </span>
-                  <GradientSwitch
-                    enabled={audio}
-                    onClick={() => handleChangeStatus("audio", !audio)}
-                  />
-                </div>
-
-                <div className="flex w-full items-center justify-between">
-                  <span className="font-medium text-zinc-400">Mudar cores</span>
-                  <GradientSwitch />
-                </div>
-
-                <div className="flex w-full items-center justify-between">
-                  <span className="font-medium text-zinc-400">
-                    Retirar animações
-                  </span>
-                  <GradientSwitch />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          )}
       </main>
     </div>
   );
