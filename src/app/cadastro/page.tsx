@@ -6,7 +6,7 @@ import DatePickerBR from "@/components/DatePickerBR";
 import Navbar from "@/components/Navbar";
 import NavbarLogin from "@/components/NavbarLogin";
 import { useCustomAlert } from "@/contexts/AlertContext";
-import { useChild } from "@/contexts/ChildContext";
+import { useUser} from "@/contexts/UserContext";
 import { useApi } from "@/hooks/useApi";
 import dayjs, { Dayjs } from "dayjs";
 import Image from "next/image";
@@ -25,12 +25,12 @@ type BtnPaginacaoProps = {
 };
 
 type BodyType = {
-  foto?: string;
-  usuario: string;
-  senha: string;
-  nome: string;
-  dataNasc: Dayjs | null;
+  profilePicture?: string;
+  username: string;
+  password: string;
+  name: string;
   email?: string;
+  birthDate?: Dayjs | null;
 };
 
 const LinhaProgresso = ({ step }: LinhaProgressoProps) => {
@@ -118,7 +118,7 @@ export default function Cadastro() {
   const searchParams = useSearchParams();
   const { loading, request } = useApi();
   const { showAlert } = useCustomAlert();
-  const { setChild } = useChild();
+  const { setChild } = useUser();
   const tipo = searchParams.get("tipo");
   const [foto, setFoto] = useState<string | null>("");
   const [usuario, setUsuario] = useState("");
@@ -141,11 +141,11 @@ export default function Cadastro() {
     const rotaCadastro = tipo === "pais" ? "/api/pais" : "/api/criancas";
 
     const body: BodyType = {
-      foto: foto?.trim(),
-      usuario: usuario.trim(),
-      senha: senha.trim(),
-      nome: nome.trim(),
-      dataNasc,
+      profilePicture: foto?.trim(),
+      username: usuario.trim(),
+      password: senha.trim(),
+      name: nome.trim(),
+      birthDate: dataNasc,
     };
 
     if (tipo === "pais") {

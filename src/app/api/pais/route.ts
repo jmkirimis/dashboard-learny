@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { serverFetch } from "@/lib/serverFetch";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const response = await fetch(`${process.env.API_URL}/pais`, {
+  const response = await serverFetch(`${process.env.API_URL}/parents`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,13 +18,11 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const body = await req.json();
-  const token = req.cookies.get('token')?.value;
 
-  const response = await fetch(`${process.env.API_URL}/pais`, {
+  const response = await serverFetch(`${process.env.API_URL}/pais`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });
@@ -33,13 +32,11 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const token = req.cookies.get('token')?.value;
 
-  const response = await fetch(`${process.env.API_URL}/pais`, {
+  const response = await serverFetch(`${process.env.API_URL}/pais`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
     },
   });
 

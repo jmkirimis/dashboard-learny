@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { serverFetch } from "@/lib/serverFetch";
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const token = req.cookies.get('token')?.value;
   const body = await req.json();
   const { id } = params;
 
-  const response = await fetch(`${process.env.API_URL}/pais/crianca/status/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/status/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });

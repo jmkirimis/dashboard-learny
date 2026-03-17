@@ -4,11 +4,9 @@ import CustomInput from "@/components/CustomInput";
 import NavbarLogin from "@/components/NavbarLogin";
 import Image from "next/image";
 import { useState } from "react";
-import Cookies from "js-cookie";
 import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import { useCustomAlert } from "@/contexts/AlertContext";
-import { useChild } from "@/contexts/ChildContext";
 import { useApi } from "@/hooks/useApi";
 
 const LoadingComponent = () => {
@@ -29,8 +27,7 @@ export default function Home() {
   const router = useRouter();
   const { loading, request } = useApi();
   const { showAlert } = useCustomAlert();
-  const { setChild } = useChild();
-  const { setUser } = useUser();
+  const { setUser, setChild } = useUser();
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
 
@@ -42,10 +39,10 @@ export default function Home() {
 
     if (result && !result.error) {
       setChild({
-        foto: result.foto,
-        usuario: result.usuario,
-        nome: result.nome,
-        pontos: result.pontos,
+        profilePicture: result.profilePicture,
+        username: result.username,
+        name: result.name,
+        points: result.points,
         fasesConcluidas: result.fasesConcluidas,
         medalhas: result.medalhas,
       });
@@ -74,24 +71,19 @@ export default function Home() {
       endpoint: "/api/login",
       method: "POST",
       body: {
-        usuario: usuario.trim(),
-        senha: senha.trim(),
+        username: usuario.trim(),
+        password: senha.trim(),
       },
     });
 
-    console.log(result)
-
-    if (result && !result.error && result.tipo === "pai") {
-      await Cookies.set("token", result.access_token);
+    if (result && !result.error && result.type === "parent") {
       setUser({
-        id: result.user.id,
-        foto: result.user.foto,
-        usuario: result.user.usuario,
-        nome: result.user.nome,
-        email: result.user.email,
-        filhos: result.user.filhos,
-        filhoSelecionado: result.user.filhoSelecionado,
-        token: result.access_token,
+        id: result.id,
+        profilePicture: result.profilePicture || "",
+        username: result.username,
+        name: result.name,
+        email: result.email,
+        selectedChild: ""
       });
       salvarFilhoSelecionado();
       router.push("/dashboard");

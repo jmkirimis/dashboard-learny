@@ -1,16 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { serverFetch } from "@/lib/serverFetch";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const token = req.cookies.get('token')?.value;
   const { id } = params;
 
-  const response = await fetch(`${process.env.API_URL}/pais/crianca/${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
-  });
+  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/${id}`);
 
   const result = await response.json();
 
@@ -18,15 +12,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const token = req.cookies.get('token')?.value;
   const body = await req.json();
   const { id } = params;
 
-  const response = await fetch(`${process.env.API_URL}/pais/crianca/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(body),
   });
@@ -37,14 +29,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const token = req.cookies.get('token')?.value;
   const { id } = params;
 
-  const response = await fetch(`${process.env.API_URL}/pais/crianca/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
     },
   });
 
