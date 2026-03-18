@@ -1,4 +1,5 @@
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { pieData, CHART_COLORS } from "@/utils/chartInfo";
 
 export default function CustomPieChart() {
   return (

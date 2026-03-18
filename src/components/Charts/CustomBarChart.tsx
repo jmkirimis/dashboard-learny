@@ -1,3 +1,4 @@
+import { barData, CHART_COLORS } from "@/utils/chartInfo";
 import {
   BarChart,
   Bar,
