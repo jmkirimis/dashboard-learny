@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { User } from "../../types";
+import { User } from "@/types";
 
 export async function getUserFromCookie(): Promise<User | null> {
   const cookieStore = await cookies();
@@ -15,11 +15,13 @@ export async function getUserFromCookie(): Promise<User | null> {
     ) as User;
 
     return {
-      id: decoded.id,
+      _id: decoded._id,
+      profilePicture: decoded.profilePicture || null,
       username: decoded.username,
       name: decoded.name,
       email: decoded.email,
       selectedChild: decoded.selectedChild,
+      type: decoded.type || null,
     };
 
   } catch {
