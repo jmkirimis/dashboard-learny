@@ -1,18 +1,32 @@
+import { Dayjs } from "dayjs";
+
 export type User = {
   id: string;
-  profilePicture?: string;
+  profilePicture: string | null;
   username: string;
   name: string;
-  email: string;
-  selectedChild?: string;
-  type?: "parent" | "child";
+  email: string | null;
+  selectedChild: string;
+  type: "parent" | "child";
 };
 
 export type Child = {
-  profilePicture?: string;
+  id?: string;
+  profilePicture: string | null;
   username: string;
-  points: number;
-  fasesConcluidas: number;
-  medalhas: number;
   name: string;
+  points: number;
+  audio: boolean | null;
+  phasesCompleted: number | null;
+  medals: number | null;
+  rankingActive: boolean | null;
+};
+
+export type BodyRegisterType = {
+  profilePicture: string | null;
+  username: string;
+  password: string;
+  name: string;
+  email?: string;
+  birthDate: Dayjs | null;
 };
