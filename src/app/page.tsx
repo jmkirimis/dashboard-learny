@@ -1,7 +1,7 @@
 "use client";
 
 import CustomInput from "@/components/CustomInput";
-import NavbarLogin from "@/components/NavbarLogin";
+import NavbarLogin from "@/components/Navbar/NavbarLogin";
 import Image from "next/image";
 import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";

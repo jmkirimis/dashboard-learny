@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { User } from "../../../../types";
+import { User } from "@/types";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
   const res = NextResponse.json(
     {
-      id: decoded.id,
+      _id: decoded._id,
       username: decoded.username,
       email: decoded.email,
       name: decoded.name,

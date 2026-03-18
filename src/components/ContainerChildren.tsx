@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { useCustomAlert } from "@/contexts/AlertContext";
 import { useApi } from "@/hooks/useApi";
 import { useUser } from "@/contexts/UserContext";
-import { Child } from "../../types";
+import { Child } from "@/types";
+import Loading from "./Loading";
 
 type Props = {
   modalOpen: boolean;
@@ -15,21 +16,7 @@ type Props = {
   toggleButtonRef: React.RefObject<HTMLButtonElement | null>;
 };
 
-const LoadingComponent = () => {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <Image
-        src="/gifs/loading.gif"
-        alt="Loading"
-        width={100}
-        height={100}
-        unoptimized
-      />
-    </div>
-  );
-};
-
-export default function ContainerFilhos({
+export default function ContainerChildren({
   modalOpen,
   onClose,
   toggleButtonRef,
@@ -151,7 +138,7 @@ export default function ContainerFilhos({
       className="flex flex-col items-center justify-center absolute left-56 w-80 top-24 min-h-28 rounded-2xl p-0.5 bg-white shadow-[0_0_12px_rgba(150,150,150,0.7)] z-50"
     >
       {loading || loadingChildren || loadingSelected ? (
-        <LoadingComponent />
+        <Loading />
       ) : (
         <div className="bg-white/10 rounded-2xl p-3 w-80">
           <div className="bg-white/10 rounded-2xl p-3">

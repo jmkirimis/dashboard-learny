@@ -1,114 +1,28 @@
 "use client";
 
-import BtnSelecionaFoto from "@/components/BtnSelecionaFoto";
 import CustomInput from "@/components/CustomInput";
 import DatePickerBR from "@/components/DatePickerBR";
-import Navbar from "@/components/Navbar";
-import NavbarLogin from "@/components/NavbarLogin";
+import Navbar from "@/components/Navbar/Navbar";
+import NavbarLogin from "@/components/Navbar/NavbarLogin";
 import { useCustomAlert } from "@/contexts/AlertContext";
 import { useApi } from "@/hooks/useApi";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { JSX, useState } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { BodyRegisterType } from "../../../types";
-
-type LinhaProgressoProps = {
-  step: number;
-};
-
-type BtnPaginacaoProps = {
-  text: string;
-  onClick?: () => void;
-};
-
-const LinhaProgresso = ({ step }: LinhaProgressoProps) => {
-  const steps = [
-    "Tela inicial",
-    "Saudação",
-    "Cadastro",
-    "Confirmação",
-    "Login",
-  ];
-
-  return (
-    <div className="flex relative flex-col justify-center items w-full h-28 px-12 gap-2 bg-[#4c4c4c] rounded-md text-white shrink-0">
-      <Image
-        src="/images/logo-com-contorno.png"
-        alt="Logo"
-        width={48}
-        height={48}
-        className="absolute right-0 top-0"
-      />
-
-      <div className="flex items-center justify-between relative w-4/5 mx-auto">
-        {/* Linha de fundo */}
-        <div className="absolute top-1/4 left-0 right-0 h-0.5 bg-gray-500 -translate-y-1/2"></div>
-
-        {/* Etapas */}
-        {steps.map((item, index) => (
-          <div key={item} className="flex flex-col items-center relative z-10">
-            {/* Bolinha */}
-            <div
-              className={`w-2.5 h-2.5 rounded-full absolute top-1/4 -translate-y-1/2 ${
-                index <= step ? "bg-white" : "bg-gray-400"
-              }`}
-            ></div>
-
-            {/* Texto */}
-            <span
-              className={`mt-6 text-md ${
-                index === step ? "text-white font-semibold" : "text-gray-300"
-              }`}
-            >
-              {item}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const BtnPaginacao = ({ text, onClick }: BtnPaginacaoProps) => {
-  return (
-    <button
-      className="flex flex-col items-center gap-4 hover:cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="flex items-center justify-center p-4 rounded-full bg-[rgba(255,255,255,0.3)]">
-        {text == "Retornar" || text == "Cadastrar Novamente" ? (
-          <FaArrowLeft size={18} />
-        ) : (
-          <FaArrowRight size={18} />
-        )}
-      </div>
-      <span>{text}</span>
-    </button>
-  );
-};
-
-const LoadingComponent = () => {
-  return (
-    <div className="flex flex-col items-center justify-center w-[50%] h-full">
-      <Image
-        src="/gifs/loading.gif"
-        alt="Loading"
-        width={250}
-        height={250}
-        unoptimized // muito importante para GIFs animados
-      />
-    </div>
-  );
-};
+import { BodyRegisterType } from "@/types";
+import ProgressLine from "@/components/ProgressLine";
+import BtnPaginate from "@/components/BtnPaginate";
+import Loading from "../loading";
+import BtnSelectPicture from "@/components/BtnSelectPicture";
 
 export default function Cadastro() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const { loading, request } = useApi();
   const { showAlert } = useCustomAlert();
-  const tipo = searchParams.get("tipo");
+
   const [data, setData] = useState<BodyRegisterType>({
     profilePicture: "",
     username: "",
@@ -117,7 +31,9 @@ export default function Cadastro() {
     email: "",
     birthDate: null,
   });
+
   const [step, setStep] = useState(1);
+  const type = searchParams.get("tipo");
 
   const handleCadastro = async () => {
     if (!data.username || !data.password || !data.name || !data.birthDate) {
@@ -129,7 +45,7 @@ export default function Cadastro() {
       return;
     }
 
-    const rotaCadastro = tipo === "pais" ? "/api/parents" : "/api/children";
+    const rotaCadastro = type === "pais" ? "/api/parents" : "/api/children";
 
     const body: BodyRegisterType = {
       profilePicture: data?.profilePicture?.trim() || null,
@@ -139,9 +55,7 @@ export default function Cadastro() {
       birthDate: data.birthDate,
     };
 
-    console.log("Dados enviados para cadastro:", body);
-
-    if (tipo === "pais") {
+    if (type === "pais") {
       body.email = data.email?.trim();
     }
 
@@ -155,8 +69,7 @@ export default function Cadastro() {
       showAlert({
         icon: "/icons/sucesso.png",
         title: "Usuário cadastrado com sucesso!",
-        message:
-          "Cadastro realizado com sucesso. Faça o login usufrua do aplicativo!",
+        message: "Cadastro realizado com sucesso. Faça o login usufrua do aplicativo!",
       });
     } else {
       showAlert({
@@ -188,7 +101,7 @@ export default function Cadastro() {
     ),
     2: (
       <div className="flex flex-col items-center justify-center w-[50%] h-full">
-        <BtnSelecionaFoto
+        <BtnSelectPicture
           type="add"
           image={data.profilePicture}
           onChange={(novaImagem: string | null) =>
@@ -209,7 +122,7 @@ export default function Cadastro() {
             isPassword
             transparent
           />
-          {tipo == "pais" && (
+          {type == "pais" && (
             <CustomInput
               label="Email"
               value={data.email}
@@ -250,32 +163,32 @@ export default function Cadastro() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {tipo == "pais" ? <NavbarLogin /> : <Navbar />}
+      {type == "pais" ? <NavbarLogin /> : <Navbar />}
 
       <main className="flex-1 flex flex-col bg-white text-zinc-800">
         <div className="flex flex-col flex-1 py-6 px-14 gap-4 overflow-hidden">
           {/* Linha de progreso do cadastro */}
-          <LinhaProgresso step={step} />
+          <ProgressLine step={step} />
 
           {/* Cadastro */}
           <div className="flex-1 flex bg-[url('/images/fundo-gradiente-login.png')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
             <div className="flex flex-col items-center justify-center px-30 pt-18 gap-2 w-[25%] h-full rounded-md p-8">
               {step > 1 && (
-                <BtnPaginacao
+                <BtnPaginate
                   text={`${step == 3 ? "Cadastrar Novamente" : "Retornar"}`}
                   onClick={() => setStep(step - 1)}
                 />
               )}
             </div>
 
-            {loading ? <LoadingComponent /> : stepsComponents[step]}
+            {loading ? <Loading /> : stepsComponents[step]}
 
             <div className="flex flex-col items-center justify-center px-30 pt-18 gap-2 w-[25%] h-full rounded-md p-8">
-              <BtnPaginacao
+              <BtnPaginate
                 text={`${
-                  step == 3 && tipo == "pais"
+                  step == 3 && type == "pais"
                     ? "Login"
-                    : step == 3 && tipo != "pais"
+                    : step == 3 && type != "pais"
                       ? "Finalizar"
                       : step == 2
                         ? "Confirmar"

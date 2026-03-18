@@ -1,6 +1,6 @@
 "use client";
 
-import NavbarLogin from "@/components/NavbarLogin";
+import NavbarLogin from "@/components/Navbar/NavbarLogin";
 
 export default function Conta() {
   return (

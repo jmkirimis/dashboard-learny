@@ -1,31 +1,17 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { useApi } from "@/hooks/useApi";
 import { useCustomAlert } from "@/contexts/AlertContext";
+import Loading from "./Loading";
 
-type Props = {
-  type?: "add" | "edit";
-  image?: string | null;
-  onChange?: (newImage: string | null) => void;
+interface Props {
+  type: "add" | "edit";
+  image: string | null;
+  onChange: (newImage: string | null) => void;
 };
 
-const LoadingComponent = () => {
-  return (
-    <div className="flex flex-col items-center justify-center">
-      <Image
-        src="/gifs/loading.gif"
-        alt="Loading"
-        width={200}
-        height={200}
-        unoptimized // muito importante para GIFs animados
-      />
-    </div>
-  );
-};
-
-export default function BtnSelecionaFoto({
+export default function BtnSelectPicture({
   type = "add",
   image,
   onChange,
@@ -70,7 +56,7 @@ export default function BtnSelecionaFoto({
   return (
     <div className="relative">
       {loading ? (
-        <LoadingComponent />
+        <Loading />
       ) : type === "edit" ? (
         <button
           onClick={handleClick}

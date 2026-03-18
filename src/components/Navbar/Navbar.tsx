@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import BtnNavbar from "./BtnNavbar";
 import { useUser } from "@/contexts/UserContext";
-import ContainerFilhos from "./ContainerFilhos";
+import ContainerChildren from "../ContainerChildren";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -116,10 +116,10 @@ export default function Navbar() {
           />
         </nav>
         {modalOpen && 
-          <ContainerFilhos 
-          modalOpen={modalOpen} 
-          onClose={() => setModalOpen(false)} 
-          toggleButtonRef={toggleButtonRef} 
+          <ContainerChildren 
+            modalOpen={modalOpen} 
+            onClose={() => setModalOpen(false)} 
+            toggleButtonRef={toggleButtonRef} 
           />
         }
       </aside>
