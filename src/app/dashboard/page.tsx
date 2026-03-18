@@ -2,9 +2,8 @@
 
 import BarraXP from "@/components/BarraXP";
 import Navbar from "@/components/Navbar";
-import { useChild } from "@/contexts/ChildContext";
+import { useUser } from "@/contexts/UserContext";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -183,20 +182,7 @@ const Medalha = ({ color, text }: MedalhaProps) => {
 };
 
 export default function Dashboard() {
-  const { child } = useChild();
-  const [nomeCrianca, setNomeCrianca] = useState("");
-  const [pontos, setPontos] = useState(0);
-  const [fasesConcluidas, setFasesConcluidas] = useState(0);
-  const [medalhas, setMedalhas] = useState([]);
-
-  useEffect(() => {
-    if (child) {
-      setNomeCrianca(child.nome);
-      setPontos(child.pontos);
-      setFasesConcluidas(child.fasesConcluidas);
-      setMedalhas(child.medalhas)
-    }
-  }, [child])
+  const { child, user } = useUser();
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -217,9 +203,9 @@ export default function Dashboard() {
           <div className="flex relative flex-col w-1/3 mb-4 gap-1 h-20 rounded-md text-[#4c4c4c] shrink-0">
               <span className="text-sm">Dashboard de:</span>
               <span className="font-bold text-xl">
-                {nomeCrianca}
+                {child?.name}
               </span>
-              <BarraXP pontos={pontos} />
+              <BarraXP pontos={child?.points} />
           </div>
 
           {/* Linha inicial de itens do dashboard */}
@@ -227,28 +213,28 @@ export default function Dashboard() {
             <DashboardItem
               width={"36%"}
               text="Atividades vistas (dia)"
-              number={fasesConcluidas}
+              number={child?.phasesCompleted || 0}
               icon="atividade.png"
               color="#EF5B6A"
             />
             <DashboardItem
               width={"20%"}
               text="Streak Diário"
-              number={fasesConcluidas}
+              number={child?.phasesCompleted || 0}
               icon="calendario-azul.png"
               color="#6CD2FF"
             />
             <DashboardItem
               width={"20%"}
               text="Conquistas"
-              number={medalhas?.length || 0}
+              number={0}
               icon="trofeu.png"
               color="#80D25B"
             />
             <DashboardItem
               width={"18%"}
               text="Medalhas"
-              number={medalhas?.length || 0}
+              number={0}
               icon="teste.png"
               color="#FFCC4D"
             />
@@ -278,13 +264,13 @@ export default function Dashboard() {
             {/* Medalhas */}
             <div className="flex flex-col w-[62%] items-center gap-3 h-full rounded-2xl py-6 px-12 bg-white shadow-[inset_0_0_10px_rgba(0,0,0,0.3)]">
               <span className="font-bold text-[#4c4c4c] mb-2">Conquistas</span>
-              {medalhas.map((item: MedalhaItem, index) => (
+              {/* {medalhas.map((item: MedalhaItem, index) => (
                   <Medalha
                     key={item._id} // melhor usar _id como key
                     color={coresMedalha[item.nome] || "#6CD2FF"} // cor padrão caso não encontre
                     text={item.nome}
                   />
-                ))}
+                ))} */}
             </div>
           </div>
         </div>

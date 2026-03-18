@@ -33,7 +33,7 @@ export default function Home() {
 
   const salvarFilhoSelecionado = async () => {
     const result = await request({
-      endpoint: "/api/filhoSelecionado",
+      endpoint: "/api/selected-child",
       method: "GET",
     });
 
@@ -43,8 +43,10 @@ export default function Home() {
         username: result.username,
         name: result.name,
         points: result.points,
-        fasesConcluidas: result.fasesConcluidas,
-        medalhas: result.medalhas,
+        phasesCompleted: result.phasesCompleted,
+        medals: result.medals,
+        audio: result.audio,
+        rankingActive: result.rankingActive,
       });
     } else {
       if (result.status === 404) return;
@@ -83,7 +85,8 @@ export default function Home() {
         username: result.username,
         name: result.name,
         email: result.email,
-        selectedChild: ""
+        selectedChild: "",
+        type: "parent",
       });
       salvarFilhoSelecionado();
       router.push("/dashboard");

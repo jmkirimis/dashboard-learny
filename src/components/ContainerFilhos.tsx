@@ -1,25 +1,18 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { IoMdAddCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
-import { useChild } from "@/contexts/ChildContext";
 import { useCustomAlert } from "@/contexts/AlertContext";
 import { useApi } from "@/hooks/useApi";
+import { useUser } from "@/contexts/UserContext";
+import { Child } from "../../types";
 
 type Props = {
   modalOpen: boolean;
   onClose: () => void;
   toggleButtonRef: React.RefObject<HTMLButtonElement | null>;
-};
-
-type Filho = {
-  _id: string;
-  usuario: string;
-  nome: string;
-  foto?: string;
 };
 
 const LoadingComponent = () => {
@@ -45,11 +38,11 @@ export default function ContainerFilhos({
   const router = useRouter();
   const { showAlert } = useCustomAlert();
   const { loading, request } = useApi();
-  const { setChild } = useChild();
-  const [loadingFilhos, setLoadingFilhos] = useState(true);
-  const [loadingSelecionado, setLoadingSelecionado] = useState(true);
-  const [filhos, setFilhos] = useState<Filho[]>([]);
-  const [filhoSelecionado, setFilhoSelecionado] = useState<Filho | null>(null);
+  const { setChild } = useUser();
+  const [loadingChildren, setLoadingChildren] = useState(true);
+  const [loadingSelected, setLoadingSelected] = useState(true);
+  const [children, setChildren] = useState<Child[]>([]);
+  const [selectedChild, setSelectedChild] = useState<Child | null>(null);
   const [erroFetch, setErroFetch] = useState(false);
 
   useEffect(() => {
@@ -69,22 +62,25 @@ export default function ContainerFilhos({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose, toggleButtonRef]);
 
-  const handleSelect = async (filho: Filho) => {
+  const handleSelect = async (child: Child) => {
     const result = await request({
-      endpoint: "/api/filhoSelecionado",
+      endpoint: "/api/selected-child",
       method: "PUT",
-      body: { id: filho?._id },
+      body: { id: child._id },
     });
 
     if (result && !result.error) {
-      setFilhoSelecionado(result);
+      setSelectedChild(result);
       setChild({
-        foto: result.foto,
-        usuario: result.usuario,
-        nome: result.nome,
-        pontos: result.pontos,
-        fasesConcluidas: result.fasesConcluidas,
-        medalhas: result.medalhas,
+        _id: result._id,
+        profilePicture: result.profilePicture,
+        username: result.username,
+        name: result.name,
+        points: result.points,
+        phasesCompleted: result.phasesCompleted,
+        medals: result.medals,
+        audio: result.audio,
+        rankingActive: result.rankingActive,
       });
     } else {
       showAlert({
@@ -100,43 +96,49 @@ export default function ContainerFilhos({
   useEffect(() => {
     if (erroFetch) return;
     const carregarFilhos = async () => {
-      setLoadingFilhos(true);
+      setLoadingChildren(true);
       const result = await request({
-        endpoint: "/api/criancas",
+        endpoint: "/api/children",
         method: "GET",
       });
       if (result && !result.error) {
-        setFilhos(result);
+        console.log(result);
+        setChildren(result);
       } else {
-        if (result.status === 404 || result.status === 401) return;
-        setErroFetch(true);
-        showAlert({
-          icon: "/icons/erro.png",
-          title: "Erro ao carregar filhos!",
-          message: result.message || "Ocorreu um erro ao carregar os filhos",
-        });
+        if (result?.status !== 404 && result?.status !== 401) {
+          setErroFetch(true);
+          showAlert({
+            icon: "/icons/erro.png",
+            title: "Erro ao carregar filhos!",
+            message: result.message || "Ocorreu um erro ao carregar os filhos",
+          });
+        }
+        setChildren([]);
       }
-      setLoadingFilhos(false);
+      setLoadingChildren(false);
     };
     const carregarFilhoSelecionado = async () => {
-      setLoadingSelecionado(true);
+      setLoadingSelected(true);
       const result = await request({
-        endpoint: "/api/filhoSelecionado",
+        endpoint: "/api/selected-child",
         method: "GET",
       });
       if (result && !result.error) {
-        setFilhoSelecionado(result);
+        setSelectedChild(result);
       } else {
-        if (result.status === 404 || result.status === 401) return;
-        setErroFetch(true);
-        showAlert({
-          icon: "/icons/erro.png",
-          title: "Erro ao carregar filho selecionado!",
-          message:
-            result.message || "Ocorreu um erro ao carregar o filho selecionado",
-        });
+        if (result?.status !== 404 && result?.status !== 401) {
+          setErroFetch(true);
+          showAlert({
+            icon: "/icons/erro.png",
+            title: "Erro ao carregar filhos!",
+            message:
+              result.message ||
+              "Ocorreu um erro ao carregar os filho selecionado",
+          });
+        }
+        setSelectedChild(null);
       }
-      setLoadingSelecionado(false);
+      setLoadingSelected(false);
     };
     carregarFilhos();
     carregarFilhoSelecionado();
@@ -148,12 +150,12 @@ export default function ContainerFilhos({
       onClick={(e) => e.stopPropagation()}
       className="flex flex-col items-center justify-center absolute left-56 w-80 top-24 min-h-28 rounded-2xl p-0.5 bg-white shadow-[0_0_12px_rgba(150,150,150,0.7)] z-50"
     >
-      {loading || loadingFilhos || loadingSelecionado ? (
+      {loading || loadingChildren || loadingSelected ? (
         <LoadingComponent />
       ) : (
         <div className="bg-white/10 rounded-2xl p-3 w-80">
           <div className="bg-white/10 rounded-2xl p-3">
-            {!filhoSelecionado ? (
+            {!selectedChild ? (
               <div className="flex flex-col justify-center items-center">
                 <span className="flex text-center mb-4">
                   Cadastre seu primeiro filho
@@ -178,22 +180,22 @@ export default function ContainerFilhos({
                       className="w-14 h-14 rounded-full bg-cover bg-center bg-no-repeat"
                       style={{
                         backgroundImage: `url(${
-                          filhoSelecionado.foto
-                            ? filhoSelecionado.foto
+                          selectedChild.profilePicture
+                            ? selectedChild.profilePicture
                             : "/images/avatar.png"
                         })`,
                       }}
                     />
                     <div>
                       <p className="text-lg font-bold text-white">
-                        {filhoSelecionado.nome || "Joana"}
+                        {selectedChild.name || "Joana"}
                       </p>
                     </div>
                   </div>
                   <button
                     className="hover:cursor-pointer"
                     onClick={() =>
-                      router.push(`/crianca/perfil?id=${filhoSelecionado._id}`)
+                      router.push(`/crianca/perfil?id=${selectedChild._id}`)
                     }
                   >
                     <Image
@@ -206,24 +208,24 @@ export default function ContainerFilhos({
                 </div>
 
                 <div className="w-full">
-                  {filhos
-                    .filter((f) => f.usuario !== filhoSelecionado.usuario)
-                    .map((filho) => (
+                  {children
+                    .filter((f) => f.username !== selectedChild.username)
+                    .map((child) => (
                       <button
-                        key={filho.usuario}
-                        onClick={() => handleSelect(filho)}
+                        key={child.username}
+                        onClick={() => handleSelect(child)}
                         className="flex items-center w-full gap-4 px-4 py-2 mb-2 rounded-lg hover:cursor-pointer hover:bg-zinc-400 transition"
                       >
                         <div
                           className="w-12 h-12 rounded-full bg-cover bg-center bg-no-repeat"
                           style={{
                             backgroundImage: `url(${
-                              filho.foto || "/images/avatar.png"
+                              child.profilePicture || "/images/avatar.png"
                             })`,
                           }}
                         />
                         <span className="text-[#4c4c4c] font-semibold text-base">
-                          {filho.nome}
+                          {child.name}
                         </span>
                       </button>
                     ))}

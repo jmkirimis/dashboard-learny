@@ -6,14 +6,13 @@ import DatePickerBR from "@/components/DatePickerBR";
 import Navbar from "@/components/Navbar";
 import NavbarLogin from "@/components/NavbarLogin";
 import { useCustomAlert } from "@/contexts/AlertContext";
-import { useUser} from "@/contexts/UserContext";
 import { useApi } from "@/hooks/useApi";
-import dayjs, { Dayjs } from "dayjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { JSX, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { BodyRegisterType } from "../../../types";
 
 type LinhaProgressoProps = {
   step: number;
@@ -22,15 +21,6 @@ type LinhaProgressoProps = {
 type BtnPaginacaoProps = {
   text: string;
   onClick?: () => void;
-};
-
-type BodyType = {
-  profilePicture?: string;
-  username: string;
-  password: string;
-  name: string;
-  email?: string;
-  birthDate?: Dayjs | null;
 };
 
 const LinhaProgresso = ({ step }: LinhaProgressoProps) => {
@@ -118,70 +108,64 @@ export default function Cadastro() {
   const searchParams = useSearchParams();
   const { loading, request } = useApi();
   const { showAlert } = useCustomAlert();
-  const { setChild } = useUser();
   const tipo = searchParams.get("tipo");
-  const [foto, setFoto] = useState<string | null>("");
-  const [usuario, setUsuario] = useState("");
-  const [senha, setSenha] = useState("");
-  const [email, setEmail] = useState("");
-  const [nome, setNome] = useState("");
-  const [dataNasc, setDataNasc] = useState<Dayjs | null>(dayjs());;
+  const [data, setData] = useState<BodyRegisterType>({
+    profilePicture: "",
+    username: "",
+    password: "",
+    name: "",
+    email: "",
+    birthDate: null,
+  });
   const [step, setStep] = useState(1);
 
   const handleCadastro = async () => {
-    if (!usuario || !senha) {
+    if (!data.username || !data.password || !data.name || !data.birthDate) {
       showAlert({
-        icon:"/icons/erro.png",
+        icon: "/icons/erro.png",
         title: "Erro ao fazer cadastro!",
         message: "Por favor, preencha todos os campos obrigatórios.",
-      })
+      });
       return;
     }
 
-    const rotaCadastro = tipo === "pais" ? "/api/pais" : "/api/criancas";
+    const rotaCadastro = tipo === "pais" ? "/api/parents" : "/api/children";
 
-    const body: BodyType = {
-      profilePicture: foto?.trim(),
-      username: usuario.trim(),
-      password: senha.trim(),
-      name: nome.trim(),
-      birthDate: dataNasc,
+    const body: BodyRegisterType = {
+      profilePicture: data?.profilePicture?.trim() || null,
+      username: data.username.trim(),
+      password: data.password.trim(),
+      name: data.name.trim(),
+      birthDate: data.birthDate,
     };
 
+    console.log("Dados enviados para cadastro:", body);
+
     if (tipo === "pais") {
-      body.email = email.trim();
+      body.email = data.email?.trim();
     }
 
     const result = await request({
       endpoint: rotaCadastro,
       method: "POST",
       body: body,
-    })
+    });
 
     if (result && !result.error) {
-      if (rotaCadastro == "/api/criancas") {
-        setChild({
-          foto: result.foto,
-          usuario: result.usuario,
-          nome: result.nome,
-          pontos: result.pontos,
-          fasesConcluidas: result.fasesConcluidas,
-          medalhas: result.medalhas,
-        });
-      }
       showAlert({
-          icon: "/icons/sucesso.png",
-          title: "Usuário cadastrado com sucesso!",
-          message: "Cadastro realizado com sucesso. Faça o login usufrua do aplicativo!",
-        })
+        icon: "/icons/sucesso.png",
+        title: "Usuário cadastrado com sucesso!",
+        message:
+          "Cadastro realizado com sucesso. Faça o login usufrua do aplicativo!",
+      });
     } else {
       showAlert({
-          icon: "/icons/erro.png",
-          title: "Erro ao cadastrar usuário!",
-          message: result.message || "Ocorreu um erro ao cadastrar o usuário",
-        })
+        icon: "/icons/erro.png",
+        title: "Erro ao cadastrar usuário!",
+        message: result.message || "Ocorreu um erro ao cadastrar o usuário",
+      });
     }
-  }
+  };
 
   const stepsComponents: Record<number, JSX.Element> = {
     1: (
@@ -205,17 +189,45 @@ export default function Cadastro() {
     2: (
       <div className="flex flex-col items-center justify-center w-[50%] h-full">
         <BtnSelecionaFoto
-            type="add"
-            image={foto}
-            onChange={(novaImagem: string | null) => setFoto(novaImagem)}
-          />
+          type="add"
+          image={data.profilePicture}
+          onChange={(novaImagem: string | null) =>
+            setData({ ...data, profilePicture: novaImagem })
+          }
+        />
         <div className="flex flex-col w-4/5 gap-3">
-          <CustomInput label="Usuário" value={usuario} onChange={(e) => setUsuario(e.target.value)} transparent />
-          <CustomInput label="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} isPassword transparent />
-          {tipo == "pais" && <CustomInput label="Email" value={email} onChange={(e) => setEmail(e.target.value)} transparent />}
-          <CustomInput label="Nome" value={nome} onChange={(e) => setNome(e.target.value)} transparent />
+          <CustomInput
+            label="Usuário"
+            value={data.username}
+            onChange={(e) => setData({ ...data, username: e.target.value })}
+            transparent
+          />
+          <CustomInput
+            label="Senha"
+            value={data.password}
+            onChange={(e) => setData({ ...data, password: e.target.value })}
+            isPassword
+            transparent
+          />
+          {tipo == "pais" && (
+            <CustomInput
+              label="Email"
+              value={data.email}
+              onChange={(e) => setData({ ...data, email: e.target.value })}
+              transparent
+            />
+          )}
+          <CustomInput
+            label="Nome"
+            value={data.name}
+            onChange={(e) => setData({ ...data, name: e.target.value })}
+            transparent
+          />
           <div className="flex items-center justify-between px-2 pr-8 py-2 w-full h-16 bg-[rgba(255,255,255,0.3)] rounded-md">
-            <DatePickerBR value={dataNasc} onChange={(novaData) => setDataNasc(novaData)} />
+            <DatePickerBR
+              value={data.birthDate}
+              onChange={(novaData) => setData({ ...data, birthDate: novaData })}
+            />
             <Image
               src="/icons/calendario.png"
               alt="Calendar Icon"
@@ -239,7 +251,7 @@ export default function Cadastro() {
   return (
     <div className="flex h-screen overflow-hidden">
       {tipo == "pais" ? <NavbarLogin /> : <Navbar />}
-      
+
       <main className="flex-1 flex flex-col bg-white text-zinc-800">
         <div className="flex flex-col flex-1 py-6 px-14 gap-4 overflow-hidden">
           {/* Linha de progreso do cadastro */}
@@ -261,7 +273,13 @@ export default function Cadastro() {
             <div className="flex flex-col items-center justify-center px-30 pt-18 gap-2 w-[25%] h-full rounded-md p-8">
               <BtnPaginacao
                 text={`${
-                  step == 3 && tipo == "pais" ? "Login" : step == 3 && tipo != "pais" ? "Finalizar" : step == 2 ? "Confirmar" : "Avançar"
+                  step == 3 && tipo == "pais"
+                    ? "Login"
+                    : step == 3 && tipo != "pais"
+                      ? "Finalizar"
+                      : step == 2
+                        ? "Confirmar"
+                        : "Avançar"
                 }`}
                 onClick={() => {
                   if (step < 3) setStep(step + 1);

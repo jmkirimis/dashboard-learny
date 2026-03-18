@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 type Props = {
   label: string;
-  value: string;
+  value?: string;
   isPassword?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   transparent?: boolean;

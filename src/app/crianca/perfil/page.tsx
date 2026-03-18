@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import BarraXP from "@/components/BarraXP";
@@ -14,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
+import { Child } from "../../../../types";
 
 export default function Perfil() {
   const router = useRouter();
@@ -22,21 +22,24 @@ export default function Perfil() {
   const { showAlert } = useCustomAlert();
   const id = searchParams.get("id");
   const [loading, setLoading] = useState(true);
-  const [foto, setFoto] = useState<string | null>("");
-  const [nomePerfil, setNomePerfil] = useState("");
-  const [usuario, setUsuario] = useState("");
-  const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
-  const [audio, setAudio] = useState(false);
-  const [pontos, setPontos] = useState(0);
-  const [ranking, setRanking] = useState(false);
+  const [childData, setChildData] = useState<Child>({
+    profilePicture: "",
+    username: "",
+    name: "",
+    points: 0,
+    audio: null,
+    phasesCompleted: null,
+    medals: null,
+    rankingActive: null,
+  });
+  const [newPassword, setNewPassword] = useState("");
   const [selectedInput, setSelectedInput] = useState<string | null>(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [editando, setEditando] = useState(false);
-  const [erroFetch, setErroFetch] = useState(false)
+  const [erroFetch, setErroFetch] = useState(false);
 
   const handleEdit = async () => {
-    if (!usuario || !nome) {
+    if (!childData.username || !childData.name) {
       showAlert({
         icon: "/icons/erro.png",
         title: "Erro ao editar usuário!",
@@ -46,14 +49,9 @@ export default function Perfil() {
     }
 
     const result = await request({
-      endpoint: `/api/crianca/${id}`,
+      endpoint: `/api/child/${id}`,
       method: "PUT",
-      body: {
-        foto: foto?.trim(),
-        usuario: usuario.trim(),
-        senha: senha.trim(),
-        nome: nome.trim(),
-      },
+      body: { ...childData, password: newPassword },
     });
 
     if (result && !result.error) {
@@ -77,7 +75,7 @@ export default function Perfil() {
 
   const handleDelete = async () => {
     const result = await request({
-      endpoint: `/api/crianca/${id}`,
+      endpoint: `/api/child/${id}`,
       method: "DELETE",
     });
     if (result && !result.error) {
@@ -102,23 +100,24 @@ export default function Perfil() {
 
   const handleChangeStatus = async (
     type: "ranking" | "audio",
-    value: boolean
+    value: boolean,
   ) => {
     // Monta o corpo do fetch com os valores atuais, substituindo o tipo que mudou
     const body = {
-      ranking: type === "ranking" ? value : ranking,
-      audio: type === "audio" ? value : audio,
+      ranking: type === "ranking" ? value : childData.rankingActive,
+      audio: type === "audio" ? value : childData.audio,
     };
 
     const result = await request({
-      endpoint: `/api/crianca/${id}/status`,
+      endpoint: `/api/child/${id}/status`,
       method: "PUT",
       body: body,
     });
 
     if (result && !result.error) {
-      if (type === "ranking") setRanking(value);
-      if (type === "audio") setAudio(value);
+      if (type === "ranking")
+        setChildData({ ...childData, rankingActive: value });
+      if (type === "audio") setChildData({ ...childData, audio: value });
     } else {
       showAlert({
         icon: "/icons/erro.png",
@@ -134,20 +133,23 @@ export default function Perfil() {
     const fetchFilho = async () => {
       setLoading(true);
       const result = await request({
-        endpoint: `/api/crianca/${id}`,
+        endpoint: `/api/child/${id}`,
         method: "GET",
       });
 
       if (result && !result.error) {
-        setFoto(result.foto);
-        setNomePerfil(result.nome);
-        setUsuario(result.usuario);
-        setNome(result.nome);
-        setAudio(result.audio);
-        setRanking(result.ranking);
-        setPontos(result.pontos);
+        setChildData({
+          profilePicture: result.profilePicture,
+          username: result.username,
+          name: result.name,
+          points: result.points,
+          audio: result.audio,
+          rankingActive: result.rankingActive,
+          phasesCompleted: result.phasesCompleted ?? null,
+          medals: result.medalhas ?? null,
+        });
       } else {
-        if (result.status === 404) return
+        if (result.status === 404) return;
         setErroFetch(true);
         showAlert({
           icon: "/icons/erro.png",
@@ -166,34 +168,38 @@ export default function Perfil() {
       <div className="flex items-center w-full h-14 rounded-full bg-linear-to-r from-[#8f6579] to-[#519ebf] shadow-sm p-1">
         <button
           className={`flex ${
-            ranking
+            childData.rankingActive
               ? "flex-row-reverse justify-start bg-transparent"
               : "bg-white"
           } items-center w-full h-12 rounded-full gap-4 transition-all duration-300 ease-in-out pr-1 hover:cursor-pointer`}
-          onClick={() => handleChangeStatus("ranking", !ranking)}
+          onClick={() =>
+            handleChangeStatus("ranking", !childData.rankingActive)
+          }
         >
           <div
             className={`${
-              ranking ? "w-8 h-8 mb-1" : "w-14 h-14 ml-[-0.5vw] mb-[-0.5vh]"
+              childData.rankingActive
+                ? "w-8 h-8 mb-1"
+                : "w-14 h-14 ml-[-0.5vw] mb-[-0.5vh]"
             } bg-contain bg-no-repeat bg-center`}
             style={{
               backgroundImage: `url(/icons/${
-                ranking ? "ranking.png" : "ranking-circulo.png"
+                childData.rankingActive ? "ranking.png" : "ranking-circulo.png"
               })`,
             }}
           />
           <div className="flex flex-col leading-tight">
             <span
-              className={`text-xs ${ranking ? "text-white" : "text-gray-500"}`}
+              className={`text-xs ${childData.rankingActive ? "text-white" : "text-gray-500"}`}
             >
               Rankeamento
             </span>
             <span
               className={`text-sm font-semibold ${
-                ranking ? "text-white" : "text-gray-800"
+                childData.rankingActive ? "text-white" : "text-gray-800"
               }`}
             >
-              {ranking ? "Habilitado" : "Desabilitado"}
+              {childData.rankingActive ? "Habilitado" : "Desabilitado"}
             </span>
           </div>
         </button>
@@ -215,7 +221,7 @@ export default function Perfil() {
       />
 
       <main className="flex-1 flex flex-col bg-white py-6 text-zinc-800 font-montserrat">
-        { loading ? 
+        {loading ? (
           <div className="flex items-center justify-center h-full">
             <Image
               src="/gifs/loading.gif"
@@ -224,21 +230,28 @@ export default function Perfil() {
               height={200}
               unoptimized
             />
-          </div> : 
-          (
+          </div>
+        ) : (
           <div className="flex w-full h-screen items-center justify-center px-14 gap-20 overflow-hidden">
             <div className="flex flex-col w-1/3 gap-4">
               <div className={`flex relative items-center gap-4`}>
                 <BtnSelecionaFoto
                   type="edit"
-                  image={foto}
-                  onChange={(novaImagem: string | null) => setFoto(novaImagem)}
+                  image={childData.profilePicture}
+                  onChange={(novaImagem: string | null) =>
+                    setChildData({ ...childData, profilePicture: novaImagem })
+                  }
                 />
                 <div className="flex flex-col gap-1">
                   <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
-                    {nomePerfil}
+                    {childData.name}
                   </span>
-                  <span className="text-[#4c4c4c]">Lv. <span className="font-bold text-lg">{Math.floor(pontos / 100)}</span></span>
+                  <span className="text-[#4c4c4c]">
+                    Lv.{" "}
+                    <span className="font-bold text-lg">
+                      {Math.floor(childData.points / 100)}
+                    </span>
+                  </span>
                 </div>
                 {modalAberto ? (
                   <div
@@ -269,13 +282,15 @@ export default function Perfil() {
                 )}
               </div>
 
-              <BarraXP pontos={pontos} />
+              <BarraXP pontos={childData.points} />
 
               <div className="flex flex-col gap-3">
                 <CustomInput
                   label="Usuário"
-                  value={usuario || ""}
-                  onChange={(e) => setUsuario(e.target.value)}
+                  value={childData.username}
+                  onChange={(e) =>
+                    setChildData({ ...childData, username: e.target.value })
+                  }
                   disabled={!editando}
                   selected={selectedInput === "usuario"}
                   onClick={() => setSelectedInput("usuario")}
@@ -283,8 +298,8 @@ export default function Perfil() {
 
                 <CustomInput
                   label="Senha"
-                  value={senha}
-                  onChange={(e) => setSenha(e.target.value)}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   disabled={!editando}
                   selected={selectedInput === "senha"}
                   onClick={() => setSelectedInput("senha")}
@@ -292,8 +307,10 @@ export default function Perfil() {
 
                 <CustomInput
                   label="Nome"
-                  value={nome || ""}
-                  onChange={(e) => setNome(e.target.value)}
+                  value={childData.name || ""}
+                  onChange={(e) =>
+                    setChildData({ ...childData, name: e.target.value })
+                  }
                   disabled={!editando}
                   selected={selectedInput === "nome"}
                   onClick={() => setSelectedInput("nome")}
@@ -348,13 +365,17 @@ export default function Perfil() {
                       Desativar áudio
                     </span>
                     <GradientSwitch
-                      enabled={audio}
-                      onClick={() => handleChangeStatus("audio", !audio)}
+                      enabled={childData.audio}
+                      onClick={() =>
+                        setChildData({ ...childData, audio: !childData.audio })
+                      }
                     />
                   </div>
 
                   <div className="flex w-full items-center justify-between">
-                    <span className="font-medium text-zinc-400">Mudar cores</span>
+                    <span className="font-medium text-zinc-400">
+                      Mudar cores
+                    </span>
                     <GradientSwitch />
                   </div>
 
@@ -368,7 +389,7 @@ export default function Perfil() {
               </div>
             </div>
           </div>
-          )}
+        )}
       </main>
     </div>
   );

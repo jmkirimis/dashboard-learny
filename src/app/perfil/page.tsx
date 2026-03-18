@@ -13,24 +13,26 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
+import { UserProfile } from "../../../types";
 
 export default function Perfil() {
   const router = useRouter();
   const { user, logout } = useUser();
   const { request } = useApi();
   const { showAlert } = useCustomAlert();
-  const [foto, setFoto] = useState<string | null>("");
-  const [nomePerfil, setNomePerfil] = useState("");
-  const [usuario, setUsuario] = useState("");
-  const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
+  const [data, setData] = useState<UserProfile>({
+    profilePicture: user?.profilePicture || "",
+    username: user?.username || "",
+    name: user?.name || "",
+    email: user?.email || "",
+  });
+  const [newPassword, setNewPassword] = useState("");
   const [selectedInput, setSelectedInput] = useState<string | null>(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [editando, setEditando] = useState(false);
 
   const handleEdit = async () => {
-    if (!usuario || !nome) {
+    if (!data.username || !data.name || !data.email) {
       showAlert({
         icon: "/icons/erro.png",
         title: "Erro ao editar usuário!",
@@ -40,15 +42,9 @@ export default function Perfil() {
     }
 
     const result = await request({
-      endpoint: `/api/pais/`,
+      endpoint: `/api/parents/`,
       method: "PUT",
-      body: {
-        foto: foto?.trim(),
-        usuario: usuario.trim(),
-        senha: senha.trim(),
-        email: email.trim(),
-        nome: nome.trim(),
-      },
+      body: { ...data, password: newPassword },
     });
 
     if (result && !result.error) {
@@ -72,7 +68,7 @@ export default function Perfil() {
 
   const handleDelete = async () => {
     const result = await request({
-      endpoint: `/api/pais`,
+      endpoint: `/api/parents`,
       method: "DELETE",
     });
     if (result && !result.error) {
@@ -96,13 +92,14 @@ export default function Perfil() {
   };
 
   useEffect(() => {
-    if (user) {
-      setFoto(user.foto);
-      setNomePerfil(user.nome);
-      setUsuario(user.usuario);
-      setNome(user.nome);
-      setEmail(user.email);
-    }
+    if (!user) return;
+
+    setData({
+      profilePicture: user?.profilePicture || "",
+      username: user?.username || "",
+      name: user?.name || "",
+      email: user?.email || "",
+    });
   }, [user]);
 
   return (
@@ -124,12 +121,14 @@ export default function Perfil() {
             <div className={`flex relative items-center gap-4`}>
               <BtnSelecionaFoto
                 type="edit"
-                image={foto}
-                onChange={(novaImagem: string | null) => setFoto(novaImagem)}
+                image={data.profilePicture}
+                onChange={(novaImagem: string | null) =>
+                  setData({ ...data, profilePicture: novaImagem })
+                }
               />
               <div className="flex flex-col gap-1">
                 <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
-                  {nomePerfil}
+                  {data.name}
                 </span>
                 <span className="text-[#4c4c4c]">{"You're a"}</span>
                 <span className="font-bold text-lg bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
@@ -170,8 +169,8 @@ export default function Perfil() {
             <div className="flex flex-col gap-3">
               <CustomInput
                 label="Usuário"
-                value={usuario || ""}
-                onChange={(e) => setUsuario(e.target.value)}
+                value={data.username}
+                onChange={(e) => setData({ ...data, username: e.target.value })}
                 disabled={!editando}
                 selected={selectedInput === "usuario"}
                 onClick={() => setSelectedInput("usuario")}
@@ -179,8 +178,8 @@ export default function Perfil() {
 
               <CustomInput
                 label="Senha"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 disabled={!editando}
                 selected={selectedInput === "senha"}
                 onClick={() => setSelectedInput("senha")}
@@ -188,8 +187,8 @@ export default function Perfil() {
 
               <CustomInput
                 label="Email"
-                value={email || ""}
-                onChange={(e) => setEmail(e.target.value)}
+                value={data.email || ""}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
                 disabled={!editando}
                 selected={selectedInput === "email"}
                 onClick={() => setSelectedInput("email")}
@@ -197,8 +196,8 @@ export default function Perfil() {
 
               <CustomInput
                 label="Nome"
-                value={nome || ""}
-                onChange={(e) => setNome(e.target.value)}
+                value={data.name}
+                onChange={(e) => setData({ ...data, name: e.target.value })}
                 disabled={!editando}
                 selected={selectedInput === "nome"}
                 onClick={() => setSelectedInput("nome")}

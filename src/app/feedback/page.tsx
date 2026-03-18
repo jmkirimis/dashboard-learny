@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import { useChild } from "@/contexts/ChildContext";
+import { useUser } from "@/contexts/UserContext";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -84,12 +84,12 @@ const FeedbackComponent = ({tempo, pontos, porcentagem}: FeedbackComponentProps)
 }
 
 export default function Feedback() {
-  const { child } = useChild();
+  const { child } = useUser();
   const [nomeCrianca, setNomeCrianca] = useState("");
 
   useEffect(() => {
     if (child) {
-      setNomeCrianca(child.nome);
+      setNomeCrianca(child.name);
     }
   }, [child])
 

@@ -5,33 +5,15 @@ import BtnNavbar from "./BtnNavbar";
 import { useUser } from "@/contexts/UserContext";
 import ContainerFilhos from "./ContainerFilhos";
 import { usePathname, useRouter } from "next/navigation";
-import { useChild } from "@/contexts/ChildContext";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useUser();
-  const { child } = useChild();
-  const [foto, setFoto] = useState("");
-  const [fotoCrianca, setFotoCrianca] = useState("");
-  const [nome, setNome] = useState("");
+  const { user, child, logout } = useUser();
   const [isOpen, setIsOpen] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (user) {
-      setFoto(user.foto);
-      setNome(user.nome);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (child) {
-      setFotoCrianca(child.foto);
-    }
-  }, [child]);
 
   return (
     <div className="flex">
@@ -64,19 +46,19 @@ export default function Navbar() {
               <div
                 className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-cover bg-center bg-no-repeat rounded-lg mb-4"
                 style={{
-                  backgroundImage: `url(${foto || "/images/user.png"})`,
+                  backgroundImage: `url(${user?.profilePicture || "/images/user.png"})`,
                 }}
               >
                 <button
                   ref={toggleButtonRef}
-                  className={`w-10 h-10 bg-cover bg-center bg-no-repeat rounded-full ${fotoCrianca && "border-2 border-white"} hover:cursor-pointer`}
+                  className={`w-10 h-10 bg-cover bg-center bg-no-repeat rounded-full ${child?.profilePicture && "border-2 border-white"} hover:cursor-pointer`}
                   style={{
-                    backgroundImage: `url(${child ? fotoCrianca || "/images/avatar.png" : "images/add.png"})`,
+                    backgroundImage: `url(${child ? child.profilePicture || "/images/avatar.png" : "/images/add.png"})`,
                   }}
                   onClick={() => setModalOpen(prev => !prev)}
                 />
               </div>
-              <span className="text-[#4c4c4c] font-bold">{nome}</span>
+              <span className="text-[#4c4c4c] font-bold">{user?.name}</span>
               <span className="text-[#4c4c4c] text-[0.75rem]">{"You're a"}</span>
               <span className="font-bold bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
                 SUPER PARENT
@@ -88,7 +70,7 @@ export default function Navbar() {
                 <div
                   className="w-10 h-10 flex items-end justify-end pr-2 pb-2 bg-[url('/images/pai.png')] bg-contain bg-no-repeat rounded-full mb-4"
                   style={{
-                    backgroundImage: `url(${foto || "/images/pai.png"})`,
+                    backgroundImage: `url(${user?.profilePicture || "/images/pai.png"})`,
                   }}
                 />
               }
