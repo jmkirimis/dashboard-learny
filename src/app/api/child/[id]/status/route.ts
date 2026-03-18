@@ -5,7 +5,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const body = await req.json();
   const { id } = params;
 
-  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/status/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}/status`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

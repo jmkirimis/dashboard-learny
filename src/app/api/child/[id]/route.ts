@@ -4,7 +4,7 @@ import { serverFetch } from "@/lib/serverFetch";
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
 
-  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/${id}`);
+  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`);
 
   const result = await response.json();
 
@@ -15,7 +15,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const body = await req.json();
   const { id } = params;
 
-  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
 
-  const response = await serverFetch(`${process.env.API_URL}/pais/crianca/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
