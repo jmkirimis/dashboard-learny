@@ -1,7 +1,7 @@
 import { Dayjs } from "dayjs";
 
-export type User = {
-  id: string;
+export interface User {
+  _id: string;
   profilePicture: string | null;
   username: string;
   name: string;
@@ -10,8 +10,10 @@ export type User = {
   type: "parent" | "child";
 };
 
-export type Child = {
-  id?: string;
+export type UserProfile = Omit<User, "id" | "selectedChild" | "type">;
+
+export interface Child {
+  _id: string;
   profilePicture: string | null;
   username: string;
   name: string;
