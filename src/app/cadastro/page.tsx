@@ -129,6 +129,7 @@ export default function Cadastro() {
             <div className="flex items-center justify-between px-2 pr-8 py-2 w-full h-16 bg-[rgba(255,255,255,0.3)] rounded-md">
               <DatePickerBR
                 value={data.birthDate || null}
+                variant="dark"
                 onChange={(novaData) =>
                   setData({ ...data, birthDate: novaData })
                 }

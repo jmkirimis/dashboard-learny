@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { serverFetch } from "@/lib/serverFetch";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function GET(req: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
 
   const response = await serverFetch(`${process.env.API_URL}/parents/child/${id}/activity`, {
     method: 'GET',

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { serverFetch } from "@/lib/serverFetch";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function GET(req: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
 
   const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`);
 
@@ -11,9 +13,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(result, { status: response.status });
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: RouteContext) {
   const body = await req.json();
-  const { id } = params;
+  const { id } = await params;
 
   const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`, {
     method: 'PUT',
@@ -28,8 +30,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(result, { status: response.status });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
 
   const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`, {
     method: 'DELETE',
@@ -49,4 +51,3 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     headers: { 'Content-Type': 'application/json' },
   });
 }
-
