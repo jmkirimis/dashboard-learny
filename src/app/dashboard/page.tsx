@@ -1,121 +1,210 @@
 "use client";
 
-import XPBar from "@/components/XPBar";
+import SelectedCharacter from "@/components/Characters/SelectedCharacter";
 import CustomBarChart from "@/components/Charts/CustomBarChart";
 import CustomPieChart from "@/components/Charts/CustomPieChart";
 import Container from "@/components/Container";
 import DashboardItem from "@/components/DashboardItem";
-import Medal from "@/components/Medal";
+import { useCustomAlert } from "@/contexts/AlertContext";
 import { useUser } from "@/contexts/UserContext";
-import { ChildDataDashboard, MedalItem } from "@/types";
-import { useEffect, useState } from "react";
-
-const medalColors: Record<string, string> = {
-  "Iniciando!": "#80D25B", 
-  "A todo o vapor!": "#EF5B6A",
-  "Desvendando!": "#6CD2FF",
-};
+import { useApi } from "@/hooks/useApi";
+import { Character } from "@/types/characters";
+import { getBarChartData, getPieChartData } from "@/utils/activityCharts";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function Dashboard() {
   const { child } = useUser();
 
-  const [childData, setData] = useState<ChildDataDashboard>({
-    profilePicture: child?.profilePicture || "",
-    username: child?.username || "",
-    name: child?.name || "",
-    points: child?.points || 0,
-    phasesCompleted: child?.phasesCompleted || null,
-    medals: child?.medals || null,
-  });
+  const { request } = useApi();
+  const { showAlert } = useCustomAlert();
+
+  const [activities, setActivities] = useState([]);
+  const [characters, setCharacters] = useState<Character[]>([]);
+
+  const getChildActivity = useCallback(
+    async (id: string) => {
+      const result = await request({
+        endpoint: `/api/parents/child/${id}/activity`,
+        method: "GET",
+      });
+
+      if (result && !result.error) {
+        setActivities(result);
+      } else {
+        if (result?.status !== 404) {
+          showAlert({
+            icon: "/icons/error.png",
+            title: "Erro ao carregar dados de atividade!",
+            message:
+              result.message ||
+              "Ocorreu um erro ao carregar os dados de atividade",
+          });
+        }
+      }
+    },
+    [request, showAlert],
+  );
+
+  const getCharactersCatalog = useCallback(async () => {
+    const result = await request({
+      endpoint: `/api/game/characters`,
+      method: "GET",
+    });
+
+    if (result && !result.error) {
+      setCharacters(result);
+    } else {
+      if (result?.status !== 404) {
+        showAlert({
+          icon: "/icons/error.png",
+          title: "Erro ao carregar dados dos personagens!",
+          message:
+            result.message ||
+            "Ocorreu um erro ao carregar os dados dos personagens do catálogo",
+        });
+      }
+    }
+  }, [request, showAlert]);
+
+  const barData = useMemo(() => {
+    return getBarChartData(activities);
+  }, [activities]);
+
+  const pieData = useMemo(() => {
+    return getPieChartData(activities);
+  }, [activities]);
 
   useEffect(() => {
-    if (!child) return;
+    if (child?._id) {
+      getChildActivity(child._id);
+    }
 
-    setData({
-      profilePicture: child?.profilePicture || "",
-      username: child?.username || "",
-      name: child?.name || "",
-      points: child?.points || 0,
-      phasesCompleted: child?.phasesCompleted || null,
-      medals: child?.medals || null,
-    });
-  }, [child]);
+    getCharactersCatalog();
+  }, [child, getChildActivity, getCharactersCatalog]);
 
   return (
     <Container>
-      <div className="flex flex-col flex-1 px-14 gap-3 overflow-hidden">
-        {/* Início */}
-        <div className="flex relative flex-col w-1/3 mb-4 gap-1 h-20 rounded-md text-[#4c4c4c] shrink-0">
-            <span className="text-sm">Dashboard de:</span>
-            <span className="font-bold text-xl">
-              {childData?.name}
-            </span>
-            <XPBar points={childData?.points} />
+      <div className="flex flex-1 flex-col overflow-hidden px-14 py-6">
+        {/* HEADER */}
+        <div className="mb-6 flex flex-col gap-1 text-[#4c4c4c]">
+          <span className="text-sm">Feedback para:</span>
+
+          <span className="text-2xl font-bold">{child?.name}</span>
         </div>
 
-        {/* Linha inicial de itens do dashboard */}
-        <div className="flex justify-between">
+        {/* STATUS */}
+        <div className="mb-3 grid shrink-0 grid-cols-3 gap-4">
           <DashboardItem
-            width={"36%"}
-            text="Atividades vistas (dia)"
-            number={childData?.points || 0}
-            icon="atividade.png"
+            width="100%"
+            text="Pontos totais"
+            number={child?.points || 0}
+            icon="activity.png"
             color="#EF5B6A"
           />
+
           <DashboardItem
-            width={"20%"}
+            width="100%"
             text="Streak Diário"
-            number={childData?.phasesCompleted || 0}
-            icon="calendario-azul.png"
+            number={child?.streak || 0}
+            icon="calendar-blue.png"
             color="#6CD2FF"
           />
+
           <DashboardItem
-            width={"20%"}
-            text="Conquistas"
-            number={childData?.medals?.length || 0}
-            icon="trofeu.png"
+            width="100%"
+            text="Personagens"
+            number={child?.characters.length || 0}
+            icon="trophy.png"
             color="#80D25B"
-          />
-          <DashboardItem
-            width={"18%"}
-            text="Medalhas"
-            number={0}
-            icon="teste.png"
-            color="#FFCC4D"
           />
         </div>
 
-        {/* Gráficos e Medalhas */}
-        <div className="flex justify-between">
-          {/* Gráficos */}
-          <div className="flex w-[36%] flex-col gap-3">
-            {/* Gráfico 01 - Barras */}
-            <div className="flex flex-col rounded-2xl p-6 h-56 gap-4 items-center justify-center bg-white shadow-[inset_0_0_10px_rgba(0,0,0,0.3)]">
-              <span className="font-bold text-[#4c4c4c] mt-2 mb-1">
+        {/* BOTTOM AREA */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* LEFT SIDE - CHARTS */}
+          <div className="grid grid-rows-2 gap-4">
+            {/* BAR CHART */}
+            <div
+              className="
+                flex flex-col rounded-2xl
+                bg-white p-6
+                shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]
+              "
+            >
+              <span
+                className="
+                  mb-4 block text-center
+                  font-bold text-[#4c4c4c]
+                "
+              >
                 Atividades vistas (dia)
               </span>
-              <CustomBarChart />
+
+              <div className="flex-1">
+                <CustomBarChart data={barData} />
+              </div>
             </div>
 
-            {/* Gráfico 02 - Pizza */}
-            <div className="rounded-2xl p-6 h-56 bg-white shadow-[inset_0_0_10px_rgba(0,0,0,0.3)]">
-              <span className="font-bold mb-3 text-center text-[#4c4c4c] block w-full">
-                Atividades vistas (dia)
+            {/* PIE CHART */}
+            <div
+              className="
+                flex flex-col rounded-2xl
+                bg-white p-6
+                shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]
+              "
+            >
+              <span
+                className="
+                  mb-4 block text-center
+                  font-bold text-[#4c4c4c]
+                "
+              >
+                Atividades vistas por mundo
               </span>
-              <CustomPieChart />
+
+              <div className="flex flex-1 items-center justify-center">
+                <CustomPieChart data={pieData} />
+              </div>
             </div>
           </div>
 
-          {/* Medalhas */}
-          <div className="flex flex-col w-[62%] items-center gap-3 h-full rounded-2xl py-6 px-12 bg-white shadow-[inset_0_0_10px_rgba(0,0,0,0.3)]">
-            <span className="font-bold text-[#4c4c4c] mb-2">Conquistas</span>
-            {childData?.medals?.map((item: MedalItem, index) => (
-                <Medal
-                  key={item._id}
-                  color={medalColors[item.name] || "#6CD2FF"}
-                  text={item.name}
-                />
-              ))}
+          {/* RIGHT SIDE - CHARACTERS */}
+          <div
+            className="
+              flex flex-col rounded-2xl
+              bg-white py-6 px-12
+              shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]
+            "
+          >
+            <span
+              className="
+                mb-6 text-center
+                font-bold text-[#4c4c4c]
+              "
+            >
+              Personagens obtidos
+            </span>
+
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto pr-2">
+              {child?.characters.map((childCharacter, index) => {
+                const catalogCharacter = characters.find(
+                  (catalogItem) =>
+                    catalogItem.code === childCharacter.characterCode,
+                );
+
+                if (!catalogCharacter) return null;
+
+                return (
+                  <SelectedCharacter
+                    key={index}
+                    name={catalogCharacter.name}
+                    image={catalogCharacter.image}
+                    level={childCharacter.level}
+                    characterPoints={childCharacter.characterPoints}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

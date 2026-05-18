@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Rotas que exigem autenticação
-const protectedRoutes = ['/configuracoes', '/dashboard', '/feedback', '/perfil'];
+const protectedRoutes = ['/configuracoes', '/dashboard', '/feedback', '/perfil', '/home'];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;

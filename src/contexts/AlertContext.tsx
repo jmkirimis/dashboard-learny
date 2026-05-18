@@ -3,12 +3,12 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback,
 import CustomAlert from "@/components/CustomAlert";
 
 type AlertData = {
+  id?: string; // opcional: para evitar duplicados
   icon: string;
   title: string;
   message: string;
   onClose?: () => void;
   onRedirect?: () => void;
-  id?: string; // opcional: para evitar duplicados
 };
 
 type AlertContextType = {

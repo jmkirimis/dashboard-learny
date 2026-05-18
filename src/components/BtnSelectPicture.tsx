@@ -7,12 +7,14 @@ import Loading from "./Loading";
 
 interface Props {
   type: "add" | "edit";
+  variant?: "dark" | "light";
   image: string | null;
   onChange: (newImage: string | null) => void;
-};
+}
 
 export default function BtnSelectPicture({
   type = "add",
+  variant,
   image,
   onChange,
 }: Props) {
@@ -25,7 +27,7 @@ export default function BtnSelectPicture({
   };
 
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -44,7 +46,7 @@ export default function BtnSelectPicture({
       if (onChange) onChange(result.url);
     } else {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao enviar imagem!",
         message:
           result.message ||
@@ -62,16 +64,24 @@ export default function BtnSelectPicture({
           onClick={handleClick}
           className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-cover bg-center bg-no-repeat rounded-lg hover:cursor-pointer"
           style={{
-            backgroundImage: `url(${image || "/images/user.png"})`,
+            backgroundImage: `url(${image || "/images/avatar-big.png"})`,
           }}
         >
-          <div className="w-8 h-8 bg-[url('/icons/editar.png')] bg-contain bg-no-repeat rounded-full" />
+          <div className="w-8 h-8 bg-[url('/icons/edit.png')] bg-contain bg-no-repeat rounded-full" />
         </button>
       ) : (
         <button onClick={handleClick} className="hover:cursor-pointer">
           <div
             className="w-32 h-32 mb-4 rounded-lg bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${image || "/images/camera.png"})` }}
+            style={{
+              backgroundImage: `url(${
+                image
+                  ? image
+                  : variant === "dark"
+                    ? "/images/camera-dark.png"
+                    : "/images/camera.png"
+              })`,
+            }}
           />
         </button>
       )}

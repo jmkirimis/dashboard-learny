@@ -1,7 +1,6 @@
 "use client";
 
 import XPBar from "@/components/XPBar";
-import BtnSelecionaFoto from "@/components/BtnSelectPicture";
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
 import GradientSwitch from "@/components/GradientSwitch";
@@ -12,37 +11,39 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
-import { Child } from "@/types";
+import { ChildWithProgress } from "@/types/child";
 import Container from "@/components/Container";
+import { useUser } from "@/contexts/UserContext";
+import { useGetData } from "@/hooks/useGetData";
+import BtnSelectPicture from "@/components/BtnSelectPicture";
 
 export default function Perfil() {
   const router = useRouter();
   const { id } = useParams();
 
   const { loading, request } = useApi();
+  const { child } = useUser();
+  const { getChildData } = useGetData();
   const { showAlert } = useCustomAlert();
 
-  const [childData, setChildData] = useState<Child>({
-    profilePicture: "",
-    username: "",
-    name: "",
-    points: 0,
-    audio: null,
-    phasesCompleted: null,
-    medals: null,
-    rankingActive: null,
+  const [childData, setChildData] = useState<Partial<ChildWithProgress>>({
+    profilePicture: child?.profilePicture || "",
+    username: child?.username || "",
+    name: child?.name || "",
+    points: child?.points || 0,
+    audioActive: child?.audioActive || null,
+    rankingActive: child?.rankingActive || null,
   });
 
   const [newPassword, setNewPassword] = useState("");
   const [selectedInput, setSelectedInput] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editando, setEditando] = useState(false);
-  const [erroFetch, setErroFetch] = useState(false);
 
   const handleEdit = async () => {
     if (!childData.username || !childData.name) {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao editar usuário!",
         message: "Por favor, preencha todos os campos obrigatórios.",
       });
@@ -50,14 +51,15 @@ export default function Perfil() {
     }
 
     const result = await request({
-      endpoint: `/api/child/${id}`,
+      endpoint: `/api/parents/child/${id}`,
       method: "PUT",
       body: { ...childData, password: newPassword },
     });
 
     if (result && !result.error) {
+      getChildData();
       showAlert({
-        icon: "/icons/sucesso.png",
+        icon: "/icons/successpng",
         title: "Usuário editado com sucesso!",
         message:
           "Edição realizado com sucesso. Aguarde a atualização dos dados na tela.",
@@ -65,7 +67,7 @@ export default function Perfil() {
       });
     } else {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao editar o usuário!",
         message:
           result.message ||
@@ -76,12 +78,13 @@ export default function Perfil() {
 
   const handleDelete = async () => {
     const result = await request({
-      endpoint: `/api/child/${id}`,
+      endpoint: `/api/parents/child/${id}`,
       method: "DELETE",
     });
     if (result && !result.error) {
+      getChildData();
       showAlert({
-        icon: "/icons/sucesso.png",
+        icon: "/icons/successpng",
         title: "Conta excluída com sucesso.",
         message:
           "Conta excluída com sucesso. Redirecionando para a página de login.",
@@ -90,7 +93,7 @@ export default function Perfil() {
       return;
     } else {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao excluir conta!",
         message:
           result.message ||
@@ -99,68 +102,16 @@ export default function Perfil() {
     }
   };
 
-  const handleChangeStatus = async (
-    type: "ranking" | "audio",
-    value: boolean,
-  ) => {
-    // Monta o corpo do fetch com os valores atuais, substituindo o tipo que mudou
-    const body = {
-      ranking: type === "ranking" ? value : childData.rankingActive,
-      audio: type === "audio" ? value : childData.audio,
-    };
-
-    const result = await request({
-      endpoint: `/api/child/${id}/status`,
-      method: "PUT",
-      body: body,
-    });
-
-    if (result && !result.error) {
-      if (type === "ranking")
-        setChildData({ ...childData, rankingActive: value });
-      if (type === "audio") setChildData({ ...childData, audio: value });
-    } else {
-      showAlert({
-        icon: "/icons/erro.png",
-        title: "Erro ao editar o status!",
-        message: result.message || "Ocorreu um erro ao editar o status",
-      });
-    }
-  };
-
   useEffect(() => {
-    if (!id || erroFetch) return;
-
-    const fetchFilho = async () => {
-      const result = await request({
-        endpoint: `/api/child/${id}`,
-        method: "GET",
-      });
-
-      if (result && !result.error) {
-        setChildData({
-          profilePicture: result.profilePicture,
-          username: result.username,
-          name: result.name,
-          points: result.points,
-          audio: result.audio,
-          rankingActive: result.rankingActive,
-          phasesCompleted: result.phasesCompleted ?? null,
-          medals: result.medalhas ?? null,
-        });
-      } else {
-        if (result.status === 404) return;
-        setErroFetch(true);
-        showAlert({
-          icon: "/icons/erro.png",
-          title: "Erro ao buscar filho!",
-          message: result.message || "Erro desconhecido ao carregar filho",
-        });
-      }
-    };
-
-    fetchFilho();
-  }, [id, showAlert, erroFetch]);
+    setChildData({
+      profilePicture: child?.profilePicture || "",
+      username: child?.username || "",
+      name: child?.name || "",
+      points: child?.points || 0,
+      audioActive: child?.audioActive || null,
+      rankingActive: child?.rankingActive || null,
+    });
+  }, [child]);
 
   const SwitchRanking = () => {
     return (
@@ -171,9 +122,13 @@ export default function Perfil() {
               ? "flex-row-reverse justify-start bg-transparent"
               : "bg-white"
           } items-center w-full h-12 rounded-full gap-4 transition-all duration-300 ease-in-out pr-1 hover:cursor-pointer`}
-          onClick={() =>
-            handleChangeStatus("ranking", !childData.rankingActive)
-          }
+          onClick={async () => {
+            setChildData({
+              ...childData,
+              rankingActive: !childData.rankingActive,
+            });
+            handleEdit();
+          }}
         >
           <div
             className={`${
@@ -183,7 +138,7 @@ export default function Perfil() {
             } bg-contain bg-no-repeat bg-center`}
             style={{
               backgroundImage: `url(/icons/${
-                childData.rankingActive ? "ranking.png" : "ranking-circulo.png"
+                childData.rankingActive ? "ranking.png" : "ranking-gradient.png"
               })`,
             }}
           />
@@ -222,9 +177,9 @@ export default function Perfil() {
         <div className="flex w-full h-screen items-center justify-center px-14 gap-20 overflow-hidden">
           <div className="flex flex-col w-1/3 gap-4">
             <div className={`flex relative items-center gap-4`}>
-              <BtnSelecionaFoto
+              <BtnSelectPicture
                 type="edit"
-                image={childData.profilePicture}
+                image={childData?.profilePicture || ""}
                 onChange={(novaImagem: string | null) =>
                   setChildData({ ...childData, profilePicture: novaImagem })
                 }
@@ -236,7 +191,7 @@ export default function Perfil() {
                 <span className="text-[#4c4c4c]">
                   Lv.{" "}
                   <span className="font-bold text-lg">
-                    {Math.floor(childData.points / 100)}
+                    {childData.points && Math.floor(childData.points / 100)}
                   </span>
                 </span>
               </div>
@@ -305,7 +260,7 @@ export default function Perfil() {
               <div className="flex">
                 {!editando ? (
                   <CustomButton
-                    icon="lapis.png"
+                    icon="pencil.png"
                     text="Alterar Perfil"
                     color="#FFB300"
                     onClick={() => setEditando(!editando)}
@@ -313,7 +268,7 @@ export default function Perfil() {
                 ) : (
                   <div className="w-full flex justify-between gap-4">
                     <CustomButton
-                      icon="confirmar.png"
+                      icon="confirm.png"
                       text="Confirmar"
                       color="#80D25B"
                       onClick={() => {
@@ -321,7 +276,7 @@ export default function Perfil() {
                       }}
                     />
                     <CustomButton
-                      icon="cancelar.png"
+                      icon="cancel.png"
                       text="Cancelar"
                       color="#C92939"
                       onClick={() => {
@@ -341,7 +296,7 @@ export default function Perfil() {
             </div>
             <div className="flex flex-col w-full rounded-2xl px-6 py-12 mt-12 gap-4 items-center justify-center bg-white shadow-[0_0_6px_rgba(150,150,150,0.6)]">
               <div className="flex w-4/5 gap-4 items-center mb-6">
-                <div className="w-10 h-10 bg-[url('/icons/acessibilidade.png')] bg-contain bg-no-repeat" />
+                <div className="w-10 h-10 bg-[url('/icons/acessibility.png')] bg-contain bg-no-repeat" />
                 <span className="font-bold bg-linear-to-r from-[#8f6579] to-[#519ebf] bg-clip-text text-transparent">
                   Acessibilidade
                 </span>
@@ -352,10 +307,14 @@ export default function Perfil() {
                     Desativar áudio
                   </span>
                   <GradientSwitch
-                    enabled={childData.audio}
-                    onClick={() =>
-                      setChildData({ ...childData, audio: !childData.audio })
-                    }
+                    enabled={childData.audioActive}
+                    onClick={async () => {
+                      setChildData({
+                        ...childData,
+                        audioActive: !childData.audioActive,
+                      });
+                      handleEdit();
+                    }}
                   />
                 </div>
 

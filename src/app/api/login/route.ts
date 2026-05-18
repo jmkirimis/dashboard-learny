@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { User } from "@/types";
+import { TokenPayload } from "@/types/user";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -24,16 +24,15 @@ export async function POST(req: NextRequest) {
   const decoded = jwt.verify(
     token,
     process.env.JWT_SECRET!
-  ) as User;
+  ) as TokenPayload;
 
   const res = NextResponse.json(
     {
-      _id: decoded._id,
-      username: decoded.username,
-      email: decoded.email,
-      name: decoded.name,
-      profilePicture: decoded.profilePicture,
-      type: decoded.type,
+      username: decoded.user.username,
+      email: decoded.user.email,
+      name: decoded.user.name,
+      profilePicture: decoded.user.profilePicture,
+      type: decoded.user.type,
     },
     { status: 200 }
   );

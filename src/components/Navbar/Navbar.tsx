@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import BtnNavbar from "./BtnNavbar";
 import { useUser } from "@/contexts/UserContext";
@@ -19,7 +19,7 @@ export default function Navbar() {
     <div className="flex">
       {/* Sidebar */}
       <aside
-        className={`relative h-screen shadow-[4px_0_10px_rgba(0,0,0,0.15)] z-10 ${
+        className={`relative min-h-screen shadow-[4px_0_10px_rgba(0,0,0,0.15)] z-10 ${
           !isOpen && "items-center"
         } bg-white text-[#4c4c4c] transition-all duration-300 ${
           isOpen ? "w-64" : "w-18"
@@ -46,7 +46,7 @@ export default function Navbar() {
               <div
                 className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-cover bg-center bg-no-repeat rounded-lg mb-4"
                 style={{
-                  backgroundImage: `url(${user?.profilePicture || "/images/user.png"})`,
+                  backgroundImage: `url(${user?.profilePicture || "/images/avatar-big.png"})`,
                 }}
               >
                 <button
@@ -68,23 +68,20 @@ export default function Navbar() {
             <a className="flex items-center gap-3 p-1 rounded-md transition text-sm">
               {
                 <div
-                  className="w-10 h-10 flex items-end justify-end pr-2 pb-2 bg-[url('/images/pai.png')] bg-contain bg-no-repeat rounded-full mb-4"
-                  style={{
-                    backgroundImage: `url(${user?.profilePicture || "/images/pai.png"})`,
-                  }}
+                  className="w-10 h-10 flex items-end justify-end pr-2 pb-2 bg-[url('/images/avatar-big.png')] bg-contain bg-no-repeat rounded-full mb-4"
                 />
               }
             </a>
           )}
           <BtnNavbar
-            icon={pathname === "/dashboard" ? "estatistica-branco.png" : "estatistica.png"}
+            icon={"statistic.png"}
             text="Estatística"
             isNavbarOpen={isOpen}
             selected={pathname === "/dashboard"}
             onClick={() => router.push("/dashboard")}
           />
           <BtnNavbar
-            icon={pathname === "/feedback" ? "sino-branco.png" : "sino.png"}
+            icon={"notification.png"}
             text="Feedback"
             isNavbarOpen={isOpen}
             selected={pathname === "/feedback"}
@@ -92,7 +89,7 @@ export default function Navbar() {
             onClick={() => router.push("/feedback")}
           />
           <BtnNavbar
-            icon={pathname === "/perfil" ? "perfil-branco.png" : "perfil2.png"}
+            icon={"profile-navbar.png"}
             text="Perfil"
             isNavbarOpen={isOpen}
             selected={pathname === "/perfil"}
@@ -100,7 +97,7 @@ export default function Navbar() {
             onClick={() => router.push("/perfil")}
           />
           <BtnNavbar
-            icon={pathname == "/configuracoes" ? "config-branco.png" : "config.png"}
+            icon={"config.png"}
             text="Configurações"
             isNavbarOpen={isOpen}
             selected={pathname == "/configuracoes"}
@@ -109,7 +106,7 @@ export default function Navbar() {
           />
           {isOpen && <hr className="text-zinc-400 rounded-md my-3" />}
           <BtnNavbar
-            icon="sair.png"
+            icon="leave.png"
             text="Sair"
             isNavbarOpen={isOpen}
             onClick={logout}

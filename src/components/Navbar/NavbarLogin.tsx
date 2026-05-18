@@ -43,7 +43,7 @@ export default function NavbarLogin() {
               onClick={() => router.push("/")}
               >
                 <Image
-                  src="/icons/user.png"
+                  src="/icons/avatar.png"
                   alt="User"
                   width={40}
                   height={40}
@@ -61,7 +61,7 @@ export default function NavbarLogin() {
             >
               {
                 <Image
-                  src="/icons/perfil.png"
+                  src="/icons/profile-gradient.png"
                   alt="Close"
                   width={32}
                   height={32}
@@ -103,7 +103,7 @@ export default function NavbarLogin() {
             }`}
           >
             <a
-              href="https://jmkirimis.github.io/site-learny/"
+              href="https://site-kastle.vercel.app/"
               target="_blank"
               className="flex items-center gap-3 p-1 rounded-md transition text-sm"
             >

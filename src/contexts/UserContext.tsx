@@ -1,22 +1,23 @@
 "use client";
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Child, User } from "@/types";
+import { User } from "@/types/user";
+import { ChildWithProgress } from "@/types/child";
 
 type UserContextType = {
   user: User | null;
-  child: Child | null;
+  child: ChildWithProgress | null;
   setUser: (user: User | null) => void;
-  setChild: (child: Child | null) => void;
+  setChild: (child: ChildWithProgress | null) => void;
   logout: (options?: { silent?: boolean }) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export function UserProvider({ children, initialUser }: { children: ReactNode; initialUser: User | null }) {
+export function UserProvider({ children }: { children: ReactNode; }) {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(initialUser);
-  const [child, setChild] = useState<Child | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [child, setChild] = useState<ChildWithProgress | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Abre modal
@@ -42,15 +43,26 @@ export function UserProvider({ children, initialUser }: { children: ReactNode; i
     setShowLogoutModal(false);
   };
 
-  // Recupera criança salva (ex: após refresh)
+  // Recupera usuário e criança salvos (ex: após refresh)
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
     const storedChild = localStorage.getItem("child");
     if (storedChild) {
       setChild(JSON.parse(storedChild));
     }
   }, []);
 
-  // Salva no localStorage quando mudar
+  // Salva usuário no localStorage quando mudar
+  useEffect(() => {
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
+  }, [user]);
+
+  // Salva criança no localStorage quando mudar
   useEffect(() => {
     if (child) localStorage.setItem("child", JSON.stringify(child));
     else localStorage.removeItem("child");

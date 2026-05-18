@@ -4,10 +4,10 @@ import CustomInput from "@/components/CustomInput";
 import NavbarLogin from "@/components/Navbar/NavbarLogin";
 import Image from "next/image";
 import { useState } from "react";
-import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import { useCustomAlert } from "@/contexts/AlertContext";
 import { useApi } from "@/hooks/useApi";
+import { useGetData } from "@/hooks/useGetData";
 
 const LoadingComponent = () => {
   return (
@@ -25,44 +25,19 @@ const LoadingComponent = () => {
 
 export default function Home() {
   const router = useRouter();
+
   const { loading, request } = useApi();
   const { showAlert } = useCustomAlert();
-  const { setUser, setChild } = useUser();
+  const { getUserData, getChildData } = useGetData();
+
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
 
-  const salvarFilhoSelecionado = async () => {
-    const result = await request({
-      endpoint: "/api/selected-child",
-      method: "GET",
-    });
-
-    if (result && !result.error) {
-      setChild({
-        profilePicture: result.profilePicture,
-        username: result.username,
-        name: result.name,
-        points: result.points,
-        phasesCompleted: result.phasesCompleted,
-        medals: result.medals,
-        audio: result.audio,
-        rankingActive: result.rankingActive,
-      });
-    } else {
-      if (result.status === 404) return;
-      showAlert({
-        icon: "/icons/erro.png",
-        title: "Erro ao buscar filho selelcionado!",
-        message:
-          result.message || "Ocorreu um erro ao buscar o filho selecionado",
-      });
-    }
-  };
 
   const handleLogin = async () => {
     if (!usuario || !senha) {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao fazer login!",
         message: "Por favor, preencha todos os campos obrigatórios.",
       });
@@ -79,20 +54,12 @@ export default function Home() {
     });
 
     if (result && !result.error && result.type === "parent") {
-      setUser({
-        id: result.id,
-        profilePicture: result.profilePicture || "",
-        username: result.username,
-        name: result.name,
-        email: result.email,
-        selectedChild: "",
-        type: "parent",
-      });
-      salvarFilhoSelecionado();
-      router.push("/dashboard");
+      getUserData();
+      getChildData();
+      router.push("/home");
     } else {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao fazer login!",
         message:
           result.message ||
@@ -107,7 +74,7 @@ export default function Home() {
 
       {/* Logo */}
       <Image
-        src="/images/logo-com-contorno.png"
+        src="/images/logo-with-stroke.png"
         alt="Logo"
         width={60}
         height={60}
@@ -117,7 +84,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col bg-white text-zinc-800">
         <div className="flex flex-col flex-1 py-6 px-14 gap-4 overflow-hidden">
           {/* Boas-vindas */}
-          <div className="flex relative flex-col justify-center w-full h-36 px-12 gap-2 bg-[url('/images/fundo-crianca.png')] rounded-md text-white shrink-0">
+          <div className="flex relative flex-col justify-center w-full h-36 px-12 gap-2 bg-[url('/images/bg-child.png')] rounded-md text-white shrink-0">
             <span className="font-bold text-3xl">Learny</span>
             <span>
               Facilitando o processo de aprendizagem para crianças <br />
@@ -126,10 +93,10 @@ export default function Home() {
           </div>
 
           {/* Login */}
-          <div className="flex-1 flex bg-[url('/images/fundo-gradiente-login.png')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
+          <div className="flex-1 flex bg-[url('/images/bg-gradient.png')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
             <div className="flex flex-col items-center justify-center w-[45%] h-full bg-[rgba(255,255,255,0.3)] rounded-md">
               <Image
-                src="/images/logo-grande.png"
+                src="/images/logo-big.png"
                 alt="Logo"
                 width={150}
                 height={150}

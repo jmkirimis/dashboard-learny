@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverFetch } from "@/lib/serverFetch";
 
+export async function GET() {
+
+  const response = await serverFetch(`${process.env.API_URL}/parents`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await response.json();
+  return NextResponse.json(result, { status: response.status });
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
@@ -31,7 +44,7 @@ export async function PUT(req: NextRequest) {
   return NextResponse.json(result, { status: response.status });
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
 
   const response = await serverFetch(`${process.env.API_URL}/parents`, {
     method: "DELETE",

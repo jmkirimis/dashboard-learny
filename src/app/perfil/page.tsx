@@ -11,17 +11,20 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
-import { UserProfile } from "@/types";
+import { User } from "@/types/user";
 import Container from "@/components/Container";
 
 export default function Perfil() {
   const router = useRouter();
 
   const { user, logout } = useUser();
+
+
+
   const { request } = useApi();
   const { showAlert } = useCustomAlert();
 
-  const [data, setData] = useState<UserProfile>({
+  const [data, setData] = useState<Partial<User>>({
     profilePicture: user?.profilePicture || "",
     username: user?.username || "",
     name: user?.name || "",
@@ -36,7 +39,7 @@ export default function Perfil() {
   const handleEdit = async () => {
     if (!data.username || !data.name || !data.email) {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao editar usuário!",
         message: "Por favor, preencha todos os campos obrigatórios.",
       });
@@ -51,7 +54,7 @@ export default function Perfil() {
 
     if (result && !result.error) {
       showAlert({
-        icon: "/icons/sucesso.png",
+        icon: "/icons/successpng",
         title: "Usuário editado com sucesso!",
         message:
           "Edição realizado com sucesso. Aguarde a atualização dos dados na tela.",
@@ -59,7 +62,7 @@ export default function Perfil() {
       });
     } else {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao editar o usuário!",
         message:
           result.message ||
@@ -75,7 +78,7 @@ export default function Perfil() {
     });
     if (result && !result.error) {
       showAlert({
-        icon: "/icons/sucesso.png",
+        icon: "/icons/successpng",
         title: "Conta excluída com sucesso.",
         message:
           "Conta excluída com sucesso. Redirecionando para a página de login.",
@@ -84,7 +87,7 @@ export default function Perfil() {
       return;
     } else {
       showAlert({
-        icon: "/icons/erro.png",
+        icon: "/icons/error.png",
         title: "Erro ao excluir conta!",
         message:
           result.message ||
@@ -111,7 +114,7 @@ export default function Perfil() {
           <div className={`flex relative items-center gap-4`}>
             <BtnSelecionaFoto
               type="edit"
-              image={data.profilePicture}
+              image={data.profilePicture || ""}
               onChange={(novaImagem: string | null) =>
                 setData({ ...data, profilePicture: novaImagem })
               }
@@ -195,7 +198,7 @@ export default function Perfil() {
             <div className="flex">
               {!editing ? (
                 <CustomButton
-                  icon="lapis.png"
+                  icon="pencil.png"
                   text="Alterar Perfil"
                   color="#FFB300"
                   onClick={() => setEditing(!editing)}
@@ -203,7 +206,7 @@ export default function Perfil() {
               ) : (
                 <div className="w-full flex justify-between gap-4">
                   <CustomButton
-                    icon="confirmar.png"
+                    icon="confirm.png"
                     text="Confirmar"
                     color="#80D25B"
                     onClick={() => {
@@ -211,7 +214,7 @@ export default function Perfil() {
                     }}
                   />
                   <CustomButton
-                    icon="cancelar.png"
+                    icon="cancel.png"
                     text="Cancelar"
                     color="#C92939"
                     onClick={() => {

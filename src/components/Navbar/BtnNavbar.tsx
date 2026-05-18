@@ -20,11 +20,12 @@ export default function BtnNavbar({
   return (
     <button
       className={`flex items-center hover:cursor-pointer ${text == "Estatística" && selected ? "bg-linear-to-r from-[#8f6579] to-[#519ebf]" : ""} ${
-        isNavbarOpen ?
-        "border border-zinc-200 rounded-md p-2 shadow-[0_0_4px_rgba(150,150,150,0.4)] hover:shadow-[0_0_6px_rgba(100,100,100,0.6)]" : "justify-center"
+        isNavbarOpen
+          ? "border border-zinc-200 rounded-md p-2 shadow-[0_0_4px_rgba(150,150,150,0.4)] hover:shadow-[0_0_6px_rgba(100,100,100,0.6)]"
+          : "justify-center"
       }`}
-      style={{ 
-        backgroundColor: selected ? bgColor : ""
+      style={{
+        backgroundColor: selected ? bgColor : "",
       }}
       onClick={onClick}
     >
@@ -39,12 +40,14 @@ export default function BtnNavbar({
             alt="Close"
             width={24}
             height={24}
-            className={`transition-all ${
-              !isNavbarOpen && "hover:cursor-pointer hover:scale-110"
-            }`}
+            className={`transition-all 
+              ${selected ? "brightness-0 invert" : ""}
+              ${!isNavbarOpen && "hover:cursor-pointer hover:scale-110"}`}
           />
         }
-        <span className={`font-bold ${selected && "text-white"}`}>{isNavbarOpen && text}</span>
+        <span className={`font-bold ${selected && "text-white"}`}>
+          {isNavbarOpen && text}
+        </span>
       </div>
     </button>
   );

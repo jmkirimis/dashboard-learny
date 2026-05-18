@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 type Props = {
   icon: string;
   title: string;
@@ -23,7 +21,7 @@ export default function CustomAlert({ icon, title, message, visible }: Props) {
         <div
           className="w-20 h-20 bg-contain bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url(${icon || "/icons/sucesso.png"})`,
+            backgroundImage: `url(${icon || "/icons/success.png"})`,
           }}
         />
         <div className="flex flex-col justify-center text-[#4c4c4c]">

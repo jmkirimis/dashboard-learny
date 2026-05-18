@@ -3,28 +3,53 @@
 import Container from "@/components/Container";
 import FeedbackContainer from "@/components/Feedback/FeedbackContainer";
 import { useUser } from "@/contexts/UserContext";
+import { PhaseCompleted, ProgressWorld } from "@/types/worlds";
 
 export default function Feedback() {
   const { child } = useUser();
 
   return (
     <Container>
-      <div className="flex flex-col flex-1 px-14 gap-3 overflow-hidden">
-        {/* Início */}
-        <div className="flex relative flex-col mb-2 w-1/3 gap-1 rounded-md text-[#4c4c4c] shrink-0">
-          <span className="text-sm">Dashboard de:</span>
-          <span className="font-bold text-xl">
-            {child ? child.name : "Usuário"}
-          </span>
+      <div className="flex flex-col pl-14 gap-6">
+        {/* Header */}
+        <div className="flex relative flex-col rounded-md text-[#4c4c4c] shrink-0">
+          <span className="text-sm">Feedback de:</span>
+          <span className="font-bold text-xl">{child?.name}</span>
+          <hr className="w-50 mt-1 text-[#4c4c4c]" />
         </div>
 
-        <div className="grid grid-cols-2 grid-rows-2 gap-6">
-          <FeedbackContainer tempo="1:30" pontos="100" porcentagem="100" />
-          <FeedbackContainer tempo="1:00" pontos="80" porcentagem="80" />
-          <FeedbackContainer tempo="2:00" pontos="150" porcentagem="100" />
-          <FeedbackContainer tempo="1:20" pontos="120" porcentagem="100" />
-        </div>
+        {/* Mundos */}
+        <div className="flex flex-col gap-8 pb-10">
+          {child?.worlds?.map((world: ProgressWorld, worldIndex: number) => {
+            // Ignora mundos sem fases concluídas
+            if (!world.completedPhases?.length) return null;
 
+            return (
+              <div key={world.worldCode} className="flex flex-col gap-4">
+                {/* Título do mundo */}
+                <h1 className="text-2xl font-bold text-[#4c4c4c]">
+                  Mundo {worldIndex + 1}
+                </h1>
+
+                {/* Lista horizontal */}
+                <div className="w-full overflow-x-auto">
+                  <div className="flex flex-row gap-4 min-w-max px-1 pt-1 pb-4">
+                    {world.completedPhases.map((phase: PhaseCompleted, index: number) => (
+                      <FeedbackContainer
+                        key={phase.phaseCode}
+                        phaseNumber={index + 1}
+                        phaseCode={phase.phaseCode}
+                        time={phase.time}
+                        points={phase.points}
+                        percentage={phase.percentage}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Container>
   );
