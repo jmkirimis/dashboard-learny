@@ -135,7 +135,7 @@ export default function Cadastro() {
                 }
               />
               <Image
-                src="/icons/calendario.png"
+                src="/icons/calendar.png"
                 alt="Calendar Icon"
                 width={32}
                 height={32}

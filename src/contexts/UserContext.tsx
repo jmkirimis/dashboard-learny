@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@/types/user";
 import { ChildWithProgress } from "@/types/child";
@@ -20,28 +20,31 @@ export function UserProvider({ children }: { children: ReactNode; }) {
   const [child, setChild] = useState<ChildWithProgress | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Abre modal
-  const logout = (options?: { silent?: boolean }) => {
-    if (options?.silent) {
-      confirmLogout();
-    } else {
-      setShowLogoutModal(true);
-    }
-  };
-
   // Confirma logout
-  const confirmLogout = async () => {
+  const confirmLogout = useCallback(async () => {
     await fetch("/api/logout", { method: "POST" });
 
     setUser(null);
     setShowLogoutModal(false);
     router.replace("/");
-  };
+  }, [router]);
+
+  // Abre modal
+  const logout = useCallback(
+    (options?: { silent?: boolean }) => {
+      if (options?.silent) {
+        confirmLogout();
+      } else {
+        setShowLogoutModal(true);
+      }
+    },
+    [confirmLogout],
+  );
 
   // Cancela logout
-  const cancelLogout = () => {
+  const cancelLogout = useCallback(() => {
     setShowLogoutModal(false);
-  };
+  }, []);
 
   // Recupera usuário e criança salvos (ex: após refresh)
   useEffect(() => {
@@ -68,8 +71,13 @@ export function UserProvider({ children }: { children: ReactNode; }) {
     else localStorage.removeItem("child");
   }, [child]);
 
+  const value = useMemo(
+    () => ({ user, child, setUser, setChild, logout }),
+    [user, child, logout],
+  );
+
   return (
-    <UserContext.Provider value={{ user, child, setUser, setChild, logout }}>
+    <UserContext.Provider value={value}>
       {children}
 
       {showLogoutModal && (

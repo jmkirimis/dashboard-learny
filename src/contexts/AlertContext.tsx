@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo, useRef } from "react";
 import CustomAlert from "@/components/CustomAlert";
 
 type AlertData = {
@@ -33,14 +33,20 @@ export function AlertProvider({ children }: Props) {
   // Ref para rastrear alertas já exibidos
   const shownAlertsRef = useRef<Set<string>>(new Set());
 
-  const showAlert = (data: AlertData) => {
+  // Ref espelhando o alerta atual para uso dentro do showAlert memoizado
+  const currentRef = useRef<AlertData | null>(null);
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
+
+  const showAlert = useCallback((data: AlertData) => {
     const alertId = data.id || `${data.title}-${data.message}`;
-    
+
     // Se já mostrou esse alerta, não adiciona na fila
     if (shownAlertsRef.current.has(alertId)) return;
 
-    // Se for alerta crítico de sessão, bloqueia outros alertas
-    if (alertId === "sessao-expirada" && current) return;
+    // Se for alerta crítico de sessão e já há outro alerta visível, ignora
+    if (alertId === "sessao-expirada" && currentRef.current) return;
 
     // Limpa fila para alerta crítico
     if (alertId === "sessao-expirada") {
@@ -49,7 +55,7 @@ export function AlertProvider({ children }: Props) {
 
     shownAlertsRef.current.add(alertId);
     setQueue(prev => [...prev, { ...data, id: alertId }]);
-  };
+  }, []);
 
   // Exibir o próximo alerta da fila
   useEffect(() => {
@@ -85,8 +91,10 @@ export function AlertProvider({ children }: Props) {
     }
   }, [visible, handleClose]);
 
+  const value = useMemo(() => ({ showAlert }), [showAlert]);
+
   return (
-    <AlertContext.Provider value={{ showAlert }}>
+    <AlertContext.Provider value={value}>
       {children}
       {current && (
         <div

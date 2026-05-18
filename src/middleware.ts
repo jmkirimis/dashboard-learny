@@ -17,9 +17,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Se o usuário já tiver token e tentar acessar a página de login, redireciona ao dashboard
+  // Se o usuário já tiver token e tentar acessar a página de login, redireciona à home
   if (pathname === '/' && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/home', request.url));
   }
 
   // Caso contrário, segue o fluxo normal

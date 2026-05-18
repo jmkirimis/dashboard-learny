@@ -17,9 +17,9 @@ export default function CustomAlert({ icon, title, message, visible }: Props) {
         ${visible ? "translate-x-0" : "translate-x-full"}
       `}
     >
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-6 items-center">
         <div
-          className="w-20 h-20 bg-contain bg-center bg-no-repeat"
+          className="w-14 h-14 bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage: `url(${icon || "/icons/success.png"})`,
           }}
