@@ -33,14 +33,27 @@ export default function Cadastro() {
 
   const [step, setStep] = useState(1);
 
-  const handleRegister = async () => {
-    if (!data.username || !data.password || !data.name || !data.birthDate) {
+  const handleRegister = async (): Promise<boolean> => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!data.username || !data.password || !data.email || !data.name || !data.birthDate) {
       showAlert({
         icon: "/icons/error.png",
         title: "Erro ao fazer cadastro!",
         message: "Por favor, preencha todos os campos obrigatórios.",
       });
-      return;
+
+      return false;
+    }
+
+    if (!emailRegex.test(data.email)) {
+      showAlert({
+        icon: "/icons/error.png",
+        title: "Email inválido!",
+        message: "Digite um email válido no formato exemplo@email.com.",
+      });
+
+      return false;
     }
 
     let profilePicture = data.profilePicture || "";
@@ -64,11 +77,11 @@ export default function Cadastro() {
             uploadResult?.message ||
             "Ocorreu um erro ao enviar a imagem para o servidor",
         });
-        return;
+
+        return false;
       }
 
       profilePicture = uploadResult.url;
-      setData({ ...data, profilePicture });
     }
 
     const result = await request({
@@ -84,13 +97,17 @@ export default function Cadastro() {
         message:
           "Cadastro realizado com sucesso. Faça o login usufrua do aplicativo!",
       });
-    } else {
-      showAlert({
-        icon: "/icons/error.png",
-        title: "Erro ao cadastrar usuário!",
-        message: result.message || "Ocorreu um erro ao cadastrar o usuário",
-      });
+
+      return true;
     }
+
+    showAlert({
+      icon: "/icons/error.png",
+      title: "Erro ao cadastrar usuário!",
+      message: result.message || "Ocorreu um erro ao cadastrar o usuário",
+    });
+
+    return false;
   };
 
   const stepsComponents: Record<number, JSX.Element> = {
@@ -106,12 +123,7 @@ export default function Cadastro() {
           <span className="text-2xl">Bem vindo (a) ao</span>
           <span className="text-3xl font-bold">LEARNY</span>
         </div>
-        <Image
-          src="/images/logo-big.png"
-          alt="Logo"
-          width={150}
-          height={150}
-        />
+        <Image src="/images/logo-big.png" alt="Logo" width={150} height={150} />
       </div>
     ),
     2: (
@@ -142,13 +154,14 @@ export default function Cadastro() {
               label="Senha"
               value={data.password}
               onChange={(e) => setData({ ...data, password: e.target.value })}
-              isPassword
+              type="password"
               transparent
             />
             <CustomInput
               label="Email"
               value={data.email || ""}
               onChange={(e) => setData({ ...data, email: e.target.value })}
+              type="email"
               transparent
             />
             <CustomInput
@@ -222,10 +235,25 @@ export default function Cadastro() {
                 text={`${
                   step == 3 ? "Login" : step == 2 ? "Confirmar" : "Avançar"
                 }`}
-                onClick={() => {
-                  if (step < 3) setStep(step + 1);
-                  if (step == 2) handleRegister();
-                  if (step == 3) router.push("/");
+                onClick={async () => {
+                  if (step === 1) {
+                    setStep(2);
+                    return;
+                  }
+
+                  if (step === 2) {
+                    const success = await handleRegister();
+
+                    if (success) {
+                      setStep(3);
+                    }
+
+                    return;
+                  }
+
+                  if (step === 3) {
+                    router.push("/");
+                  }
                 }}
               />
             </div>

@@ -38,12 +38,24 @@ export default function Perfil() {
   const [editing, setEditing] = useState(false);
 
   const handleEdit = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!data.username || !data.name || !data.email) {
       showAlert({
         icon: "/icons/error.png",
         title: "Erro ao editar usuário!",
         message: "Por favor, preencha todos os campos obrigatórios.",
       });
+      return;
+    }
+
+    if (!emailRegex.test(data.email)) {
+      showAlert({
+        icon: "/icons/error.png",
+        title: "Email inválido!",
+        message: "Digite um email válido no formato exemplo@email.com.",
+      });
+
       return;
     }
 
@@ -77,10 +89,16 @@ export default function Perfil() {
       setImagePreview(null);
     }
 
+    const body = {
+      ...data,
+      profilePicture,
+      ...(newPassword !== "" && { password: newPassword }),
+    };
+
     const result = await request({
       endpoint: `/api/parents/`,
       method: "PUT",
-      body: { ...data, password: newPassword, profilePicture },
+      body: body,
     });
 
     if (result && !result.error) {
@@ -88,8 +106,8 @@ export default function Perfil() {
         icon: "/icons/success.png",
         title: "Usuário editado com sucesso!",
         message:
-          "Edição realizado com sucesso. Aguarde a atualização dos dados na tela.",
-        onClose: () => router.refresh(),
+          "Edição realizada com sucesso. Redirecionando para login.",
+        onClose: () => logout({silent: true}),
       });
     } else {
       showAlert({
@@ -144,7 +162,7 @@ export default function Perfil() {
           <div className={`flex relative items-center gap-4`}>
             <BtnSelecionaFoto
               type="edit"
-              image={imagePreview || data.profilePicture || ""}
+              image={imagePreview || user?.profilePicture || ""}
               onChange={(file, preview) => {
                 setSelectedImageFile(file);
                 setImagePreview(preview || null);
@@ -152,7 +170,7 @@ export default function Perfil() {
             />
             <div className="flex flex-col gap-1">
               <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
-                {data.name}
+                {user?.name}
               </span>
               <span className="text-[#4c4c4c]">{"You're a"}</span>
               <span className="font-bold text-lg bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">
@@ -211,6 +229,7 @@ export default function Perfil() {
 
             <CustomInput
               label="Email"
+              type="email"
               value={data.email || ""}
               onChange={(e) => setData({ ...data, email: e.target.value })}
               disabled={!editing}

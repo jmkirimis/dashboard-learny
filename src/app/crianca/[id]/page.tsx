@@ -316,7 +316,7 @@ export default function Perfil() {
                 label="Senha"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                isPassword
+                type="password"
                 disabled={!editando}
                 selected={selectedInput === "senha"}
                 onClick={() => setSelectedInput("senha")}

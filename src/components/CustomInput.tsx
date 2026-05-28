@@ -6,7 +6,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 type Props = {
   label: string;
   value?: string;
-  isPassword?: boolean;
+  type?: "text" | "email" | "password";
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   transparent?: boolean;
   disabled?: boolean;
@@ -16,7 +16,7 @@ type Props = {
 export default function CustomInput({
   label,
   value,
-  isPassword,
+  type="text",
   onChange,
   transparent,
   disabled,
@@ -45,7 +45,7 @@ export default function CustomInput({
         {label}:
       </span>
       <input
-        type={isPassword && !mostrarSenha ? "password" : "text"}
+        type={mostrarSenha ? "text" : type}
         className={`w-full p-1 ${
           transparent ? "text-white" : "text-[#4c4c4c]"
         } focus:outline-none`}
@@ -53,7 +53,7 @@ export default function CustomInput({
         onChange={onChange}
         disabled={disabled}
       />
-      {isPassword && (
+      {type == "password" && (
         <button
           type="button"
           onClick={() => setMostrarSenha((prev) => !prev)}

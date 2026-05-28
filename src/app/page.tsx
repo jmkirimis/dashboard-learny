@@ -126,7 +126,7 @@ export default function Home() {
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   transparent
-                  isPassword
+                  type="password"
                 />
                 <button
                   type="submit"
