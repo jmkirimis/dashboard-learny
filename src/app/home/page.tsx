@@ -20,10 +20,12 @@ export default function BoasVindas() {
 
         <div className="flex flex-col gap-4">
           <h1 className="text-[#4c4c4c] font-bold text-xl">Mês dos autistas</h1>
-          <div className="grid grid-cols-12 gap-6 h-60">
-            <div className="col-span-6 rounded-md bg-[url('/images/home/banner2.webp')] bg-cover bg-center" />
-            <div className="col-span-3 rounded-md bg-[url('/images/home/banner3.webp')] bg-cover bg-center" />
-            <div className="col-span-3 rounded-md bg-[url('/images/home/banner4.webp')] bg-cover bg-center" />
+          <div className="custom-scrollbar w-full overflow-x-auto">
+            <div className="flex flex-row gap-6 min-w-max px-1 pt-1 pb-4">
+              <div className="h-60 w-[845px] shrink-0 rounded-md bg-[url('/images/home/banner2.webp')] bg-cover bg-center" />
+              <div className="h-60 w-[271px] shrink-0 rounded-md bg-[url('/images/home/banner3.webp')] bg-cover bg-center" />
+              <div className="h-60 w-[271px] shrink-0 rounded-md bg-[url('/images/home/banner4.webp')] bg-cover bg-center" />
+            </div>
           </div>
         </div>
       </div>

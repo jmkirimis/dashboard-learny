@@ -17,7 +17,6 @@ type Props = {
 
 type NotificationModalProps = {
   open: boolean;
-  type: string;
   description: string;
   onChangeDescription: (value: string) => void;
   onClose: () => void;
@@ -26,7 +25,6 @@ type NotificationModalProps = {
 
 const NotificationModal = ({
   open,
-  type,
   description,
   onChangeDescription,
   onClose,
@@ -41,7 +39,7 @@ const NotificationModal = ({
           Enviar notificação
         </h2>
 
-        <span className="mb-4 block text-sm text-zinc-500">Tipo: {type}</span>
+        <span className="mb-4 block text-sm text-zinc-500">Tipo: Comentário</span>
 
         <textarea
           value={description}
@@ -72,6 +70,7 @@ const NotificationModal = ({
               text-zinc-700
               transition
               hover:bg-zinc-100
+              hover:cursor-pointer
             "
           >
             Cancelar
@@ -81,12 +80,13 @@ const NotificationModal = ({
             onClick={onConfirm}
             className="
               rounded-lg
-              bg-[#6CD2FF]
+              bg-[#80D25B]
               px-4
               py-2
               text-white
               transition
               hover:opacity-90
+              hover:cursor-pointer
             "
           >
             Enviar
@@ -194,7 +194,6 @@ export default function FeedbackContainer({
     <>
       <NotificationModal
         open={showModal}
-        type={type}
         description={description}
         onChangeDescription={setDescription}
         onClose={closeNotificationModal}
