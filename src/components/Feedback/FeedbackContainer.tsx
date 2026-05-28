@@ -214,7 +214,7 @@ export default function FeedbackContainer({
         "
       >
         {/* HEADER */}
-        <div className="mb-2 flex h-14 items-center rounded-xl bg-[url('/images/bg-dino.png')] bg-cover bg-no-repeat px-4">
+        <div className="mb-2 flex h-14 items-center rounded-xl bg-[url('/images/bg-dino.webp')] bg-cover bg-no-repeat px-4">
           <span className="text-xl font-bold text-white">
             {`Fase ${phaseNumber}`}
           </span>

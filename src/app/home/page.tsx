@@ -16,14 +16,14 @@ export default function BoasVindas() {
         </div>
 
         {/* Linha inicial de itens do dashboard */}
-        <div className="w-full h-60 bg-[url('/images/home/principal.png')] bg-cover bg-no-repeat rounded-md shrink-0 mb-6" />
+        <div className="w-full h-60 bg-[url('/images/home/principal.webp')] bg-cover bg-no-repeat rounded-md shrink-0 mb-6" />
 
         <div className="flex flex-col gap-4">
           <h1 className="text-[#4c4c4c] font-bold text-xl">Mês dos autistas</h1>
           <div className="grid grid-cols-12 gap-6 h-60">
-            <div className="col-span-6 rounded-md bg-[url('/images/home/banner2.png')] bg-cover bg-center" />
-            <div className="col-span-3 rounded-md bg-[url('/images/home/banner3.png')] bg-cover bg-center" />
-            <div className="col-span-3 rounded-md bg-[url('/images/home/banner4.png')] bg-cover bg-center" />
+            <div className="col-span-6 rounded-md bg-[url('/images/home/banner2.webp')] bg-cover bg-center" />
+            <div className="col-span-3 rounded-md bg-[url('/images/home/banner3.webp')] bg-cover bg-center" />
+            <div className="col-span-3 rounded-md bg-[url('/images/home/banner4.webp')] bg-cover bg-center" />
           </div>
         </div>
       </div>

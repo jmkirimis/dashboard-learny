@@ -155,7 +155,7 @@ export default function CadastroCrianca() {
               <div className="flex items-center justify-between px-2 pr-8 py-2 w-full h-16 border border-zinc-200 rounded-md shadow-[0_0_4px_rgba(150,150,150,0.3)]">
                 <DatePickerBR
                   variant="dark"
-                  value={null}
+                  value={childData.birthDate || null}
                   onChange={(novaData) =>
                     setChildData({ ...childData, birthDate: novaData })
                   }

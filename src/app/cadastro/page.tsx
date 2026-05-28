@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 import { JSX, useState } from "react";
 import ProgressLine from "@/components/ProgressLine";
 import BtnPaginate from "@/components/BtnPaginate";
-import Loading from "../loading";
 import BtnSelectPicture from "@/components/BtnSelectPicture";
 import { User } from "@/types/user";
+import LoadingComponent from "@/components/LoadingComponent";
 
 export default function Cadastro() {
   const router = useRouter();
@@ -203,7 +203,7 @@ export default function Cadastro() {
             Cadastro de responsável realizado com sucesso
           </span>
         </div>
-        <div className="w-70 h-70 bg-[url('/images/elephant.png')] bg-cover bg-no-repeat" />
+        <div className="w-70 h-70 bg-[url('/images/elephant.webp')] bg-cover bg-no-repeat" />
       </div>
     ),
   };
@@ -218,7 +218,7 @@ export default function Cadastro() {
           <ProgressLine step={step} />
 
           {/* Cadastro */}
-          <div className="flex-1 flex bg-[url('/images/bg-gradient.png')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
+          <div className="flex-1 flex bg-[url('/images/bg-gradient.webp')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
             <div className="flex flex-col items-center justify-center px-30 pt-18 gap-2 w-[25%] h-full rounded-md p-8">
               {step > 1 && (
                 <BtnPaginate
@@ -228,7 +228,7 @@ export default function Cadastro() {
               )}
             </div>
 
-            {loading ? <Loading /> : stepsComponents[step]}
+            {loading ? <LoadingComponent /> : stepsComponents[step]}
 
             <div className="flex flex-col items-center justify-center px-30 pt-18 gap-2 w-[25%] h-full rounded-md p-8">
               <BtnPaginate

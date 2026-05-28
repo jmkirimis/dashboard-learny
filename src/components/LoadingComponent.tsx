@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-export default function Loading() {
+export default function LoadingComponent() {
   return (
-    <div className="flex flex-col items-center justify-center w-[50%] h-full">
+    <div className="flex items-center justify-center h-full">
       <Image
-        src="/gifs/loading.gif"
+        src="/gifs/loading.webp"
         alt="Loading"
         width={250}
         height={250}

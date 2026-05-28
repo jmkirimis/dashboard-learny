@@ -6,7 +6,6 @@ import CustomInput from "@/components/CustomInput";
 import GradientSwitch from "@/components/GradientSwitch";
 import { useCustomAlert } from "@/contexts/AlertContext";
 import { useApi } from "@/hooks/useApi";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -234,17 +233,7 @@ export default function Perfil() {
     );
   };
 
-  return loading ? (
-        <div className="flex items-center justify-center h-full">
-          <Image
-            src="/gifs/loading.gif"
-            alt="Loading"
-            width={200}
-            height={200}
-            unoptimized
-          />
-        </div>
-      ) : (
+  return (
         <div className="flex w-full h-screen items-center justify-center px-14 gap-20 overflow-hidden">
           <div className="flex flex-col w-1/3 gap-4">
             <div className={`flex relative items-center gap-4`}>

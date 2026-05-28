@@ -8,7 +8,7 @@ import { useCustomAlert } from "@/contexts/AlertContext";
 import { useApi } from "@/hooks/useApi";
 import { useUser } from "@/contexts/UserContext";
 import { Child } from "@/types/child";
-import Loading from "./Loading";
+import Loading from "./LoadingComponent";
 import { useGetData } from "@/hooks/useGetData";
 
 type Props = {
@@ -107,7 +107,15 @@ export default function ContainerChildren({
       className="flex flex-col items-center justify-center absolute left-56 w-80 top-24 min-h-28 rounded-2xl p-0.5 bg-white shadow-[0_0_12px_rgba(150,150,150,0.7)] z-50"
     >
       {loading || loadingChildren ? (
-        <Loading />
+        <div className="flex items-center justify-center h-full">
+          <Image
+            src="/gifs/loading.webp"
+            alt="Loading"
+            width={150}
+            height={150}
+            unoptimized
+          />
+        </div>
       ) : (
         <div className="bg-white/10 rounded-2xl p-3 w-80">
           <div className="bg-white/10 rounded-2xl p-3">

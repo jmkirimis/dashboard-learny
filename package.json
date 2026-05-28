@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
@@ -13,10 +13,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.919.0",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/material": "^7.3.4",
-    "@mui/x-date-pickers": "^8.14.1",
     "dayjs": "^1.11.18",
     "jsonwebtoken": "^9.0.3",
     "next": "15.5.9",

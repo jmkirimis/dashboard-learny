@@ -278,7 +278,7 @@ export default function Perfil() {
           </div>
         </div>
 
-        <div className="ml-32 w-96 h-96 flex bg-[url('/images/super-parent.png')] bg-contain bg-no-repeat" />
+        <div className="ml-32 w-96 h-96 flex bg-[url('/images/super-parent.webp')] bg-contain bg-no-repeat" />
       </div>
   );
 }

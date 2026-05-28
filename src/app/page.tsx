@@ -13,7 +13,7 @@ const LoadingComponent = () => {
   return (
     <div className="flex items-center justify-center h-full">
       <Image
-        src="/gifs/loading.gif"
+        src="/gifs/loading.webp"
         alt="Loading"
         width={100}
         height={100}
@@ -84,7 +84,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col bg-white text-zinc-800">
         <div className="flex flex-col flex-1 py-6 px-14 gap-4 overflow-hidden">
           {/* Boas-vindas */}
-          <div className="flex relative flex-col justify-center w-full h-36 px-12 gap-2 bg-[url('/images/bg-child.png')] rounded-md text-white shrink-0">
+          <div className="flex relative flex-col justify-center w-full h-36 px-12 gap-2 bg-[url('/images/bg-child.webp')] rounded-md text-white shrink-0">
             <span className="font-bold text-3xl">Learny</span>
             <span>
               Facilitando o processo de aprendizagem para crianças <br />
@@ -93,7 +93,7 @@ export default function Home() {
           </div>
 
           {/* Login */}
-          <div className="flex-1 flex bg-[url('/images/bg-gradient.png')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
+          <div className="flex-1 flex bg-[url('/images/bg-gradient.webp')] justify-between items-center p-8 gap-2 rounded-md text-white overflow-hidden">
             <div className="flex flex-col items-center justify-center w-[45%] h-full bg-[rgba(255,255,255,0.3)] rounded-md">
               <Image
                 src="/images/logo-big.png"
