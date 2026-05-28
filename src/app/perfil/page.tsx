@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import { User } from "@/types/user";
-import Container from "@/components/Container";
 
 export default function Perfil() {
   const router = useRouter();
@@ -108,7 +107,6 @@ export default function Perfil() {
   }, [user]);
 
   return (
-    <Container>
       <div className="flex w-full h-screen items-center justify-center px-14 gap-3 overflow-hidden">
         <div className="flex flex-col w-1/3 gap-4">
           <div className={`flex relative items-center gap-4`}>
@@ -230,6 +228,5 @@ export default function Perfil() {
 
         <div className="ml-32 w-96 h-96 flex bg-[url('/images/super-parent.png')] bg-contain bg-no-repeat" />
       </div>
-    </Container>
   );
 }

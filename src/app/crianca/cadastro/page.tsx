@@ -6,7 +6,6 @@ import { useApi } from "@/hooks/useApi";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ChildWithProgress } from "@/types/child";
-import Container from "@/components/Container";
 import { useGetData } from "@/hooks/useGetData";
 import Image from "next/image";
 import DatePickerBR from "@/components/DatePickerBR";
@@ -74,7 +73,6 @@ export default function CadastroCrianca() {
   };
 
   return (
-    <Container>
       <div className="flex flex-col px-20 py-12 gap-16">
         <div>
           <h1 className="font-bold text-xl bg-linear-to-b from-[#519ebf] to-[#9c5869] bg-clip-text text-transparent">
@@ -178,6 +176,5 @@ export default function CadastroCrianca() {
           </div>
         </div>
       </div>
-    </Container>
   );
 }

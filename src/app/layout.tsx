@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@/contexts/UserContext";
 import { AlertProvider } from "@/contexts/AlertContext";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -29,7 +30,7 @@ export default function RootLayout({
       >
         <AlertProvider>
           <UserProvider>
-              {children}
+            <LayoutWrapper>{children}</LayoutWrapper>
           </UserProvider>
         </AlertProvider>
       </body>

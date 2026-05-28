@@ -1,6 +1,5 @@
 "use client";
 
-import Container from "@/components/Container";
 import FeedbackContainer from "@/components/Feedback/FeedbackContainer";
 import { useUser } from "@/contexts/UserContext";
 import { PhaseCompleted, ProgressWorld } from "@/types/worlds";
@@ -9,7 +8,6 @@ export default function Feedback() {
   const { child } = useUser();
 
   return (
-    <Container>
       <div className="flex flex-col pl-14 gap-6">
         {/* Header */}
         <div className="flex relative flex-col rounded-md text-[#4c4c4c] shrink-0">
@@ -51,6 +49,5 @@ export default function Feedback() {
           })}
         </div>
       </div>
-    </Container>
   );
 }

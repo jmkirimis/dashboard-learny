@@ -3,7 +3,6 @@
 import SelectedCharacter from "@/components/Characters/SelectedCharacter";
 import CustomBarChart from "@/components/Charts/CustomBarChart";
 import CustomPieChart from "@/components/Charts/CustomPieChart";
-import Container from "@/components/Container";
 import DashboardItem from "@/components/DashboardItem";
 import { useCustomAlert } from "@/contexts/AlertContext";
 import { useUser } from "@/contexts/UserContext";
@@ -83,7 +82,6 @@ export default function Dashboard() {
   }, [child, getChildActivity, getCharactersCatalog]);
 
   return (
-    <Container>
       <div className="flex flex-1 flex-col overflow-hidden px-14 py-6">
         {/* HEADER */}
         <div className="mb-6 flex flex-col gap-1 text-[#4c4c4c]">
@@ -208,6 +206,5 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </Container>
   );
 }

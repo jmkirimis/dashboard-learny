@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import { ChildWithProgress } from "@/types/child";
-import Container from "@/components/Container";
 import { useUser } from "@/contexts/UserContext";
 import { useGetData } from "@/hooks/useGetData";
 import BtnSelectPicture from "@/components/BtnSelectPicture";
@@ -202,9 +201,7 @@ export default function Perfil() {
     );
   };
 
-  return (
-    <Container>
-      {loading ? (
+  return loading ? (
         <div className="flex items-center justify-center h-full">
           <Image
             src="/gifs/loading.gif"
@@ -383,7 +380,5 @@ export default function Perfil() {
             </div>
           </div>
         </div>
-      )}
-    </Container>
-  );
+      );
 }

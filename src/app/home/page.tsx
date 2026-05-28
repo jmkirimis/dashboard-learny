@@ -1,6 +1,5 @@
 "use client";
 
-import Container from "@/components/Container";
 import { useUser } from "@/contexts/UserContext";
 
 export default function BoasVindas() {
@@ -8,7 +7,6 @@ export default function BoasVindas() {
 
 
   return (
-    <Container>
       <div className="flex flex-col flex-1 gap-2 px-14 overflow-hidden">
         {/* Início */}
         <div className="flex relative flex-col w-1/3 mb-4 gap-1 h-20 rounded-md shrink-0 bg-linear-to-b from-[#ab4c59] to-[#70819c] bg-clip-text text-transparent">
@@ -29,6 +27,5 @@ export default function BoasVindas() {
           </div>
         </div>
       </div>
-    </Container>
   );
 }

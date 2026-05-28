@@ -1,11 +1,9 @@
 "use client";
 
-import Container from "@/components/Container";
 import GradientSwitch from "@/components/GradientSwitch";
 
 export default function Configuracoes() {
   return (
-    <Container>
       <div className="flex flex-col flex-1 px-18 gap-3 overflow-hidden">
         {/* Início */}
         <div className="flex relative flex-col w-1/3 gap-1 h-20 rounded-md text-[#4c4c4c] shrink-0">
@@ -34,6 +32,5 @@ export default function Configuracoes() {
           </div>
         </div>
       </div>
-    </Container>
   );
 }
