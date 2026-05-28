@@ -13,6 +13,15 @@ export default function SelectedCharacter({
   level,
   characterPoints,
 }: Props) {
+
+  const progressLevel = (characterPoints / getCharacterXpToNext(level)) * 100
+
+  function getCharacterXpToNext(level: number) {
+    return Math.floor(
+      80 + 45 * Math.pow(level - 1, 1.4)
+    );
+  }
+
   return (
     <div
       className="
@@ -50,8 +59,8 @@ export default function SelectedCharacter({
         <div className="flex items-center gap-3">
           <div className="flex-1">
             <ProgressBarCharacter
-              label={`${characterPoints}%`}
-              progress={characterPoints}
+              label={`${progressLevel < 100 ? progressLevel : "100"}%`}
+              progress={progressLevel}
             />
           </div>
         </div>

@@ -54,7 +54,7 @@ export default function Perfil() {
 
     if (result && !result.error) {
       showAlert({
-        icon: "/icons/successpng",
+        icon: "/icons/success.png",
         title: "Usuário editado com sucesso!",
         message:
           "Edição realizado com sucesso. Aguarde a atualização dos dados na tela.",
@@ -78,7 +78,7 @@ export default function Perfil() {
     });
     if (result && !result.error) {
       showAlert({
-        icon: "/icons/successpng",
+        icon: "/icons/success.png",
         title: "Conta excluída com sucesso.",
         message:
           "Conta excluída com sucesso. Redirecionando para a página de login.",
@@ -157,7 +157,7 @@ export default function Perfil() {
             )}
           </div>
 
-          <XPBar />
+          <XPBar progress={50} xp={50} toNext={100} />
 
           <div className="flex flex-col gap-3">
             <CustomInput

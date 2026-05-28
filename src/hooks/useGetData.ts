@@ -35,7 +35,10 @@ export function useGetData() {
     if (result && !result.error) {
       setChild(result);
     } else {
-      if (result.status === 404) return;
+      if (result.status === 404) {
+        setChild(null);
+        return
+      } 
       showAlert({
         icon: "/icons/error.png",
         title: "Erro ao buscar filho selelcionado!",

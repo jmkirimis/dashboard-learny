@@ -49,7 +49,7 @@ export default function Cadastro() {
 
     if (result && !result.error) {
       showAlert({
-        icon: "/icons/successpng",
+        icon: "/icons/success.png",
         title: "Usuário cadastrado com sucesso!",
         message:
           "Cadastro realizado com sucesso. Faça o login usufrua do aplicativo!",

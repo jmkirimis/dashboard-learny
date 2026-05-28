@@ -6,7 +6,7 @@ type RouteContext = { params: Promise<{ id: string }> };
 export async function GET(req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
-  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`);
+  const response = await serverFetch(`${process.env.API_URL}/parents/child/${id}`);
 
   const result = await response.json();
 
@@ -17,7 +17,7 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
   const body = await req.json();
   const { id } = await params;
 
-  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/parents/child/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
 export async function DELETE(req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
-  const response = await serverFetch(`${process.env.API_URL}/parents/children/${id}`, {
+  const response = await serverFetch(`${process.env.API_URL}/parents/child/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

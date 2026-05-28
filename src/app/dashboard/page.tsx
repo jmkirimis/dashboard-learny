@@ -87,9 +87,9 @@ export default function Dashboard() {
       <div className="flex flex-1 flex-col overflow-hidden px-14 py-6">
         {/* HEADER */}
         <div className="mb-6 flex flex-col gap-1 text-[#4c4c4c]">
-          <span className="text-sm">Feedback para:</span>
-
+          <span className="text-sm">Feedback de:</span>
           <span className="text-2xl font-bold">{child?.name}</span>
+          <hr className="w-2/3 mt-1 text-[#4c4c4c]" />
         </div>
 
         {/* STATUS */}

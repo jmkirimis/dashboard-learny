@@ -40,8 +40,37 @@ export default function Perfil() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editando, setEditando] = useState(false);
 
-  const handleEdit = async () => {
-    if (!childData.username || !childData.name) {
+  const levelData = child && getLevelFromXp(child.points);
+  const progressPercentage = levelData
+    ? (levelData.currentLevelXp / levelData.xpToNextLevel) * 100
+    : 0;
+
+  function getLevelFromXp(totalXp: number) {
+    let level = 1;
+
+    let accumulatedXp = 0;
+
+    while (true) {
+      const xpToNext = Math.floor(80 + 35 * Math.pow(level, 1.28));
+
+      if (accumulatedXp + xpToNext > totalXp) {
+        break;
+      }
+
+      accumulatedXp += xpToNext;
+
+      level++;
+    }
+
+    return {
+      level,
+      currentLevelXp: totalXp - accumulatedXp,
+      xpToNextLevel: Math.floor(80 + 35 * Math.pow(level, 1.28)),
+    };
+  }
+
+  const handleEdit = async (data = childData) => {
+    if (!data.username || !data.name) {
       showAlert({
         icon: "/icons/error.png",
         title: "Erro ao editar usuário!",
@@ -50,16 +79,21 @@ export default function Perfil() {
       return;
     }
 
+    const body = {
+      ...data,
+      ...(newPassword !== "" && { password: newPassword }),
+    };
+
     const result = await request({
       endpoint: `/api/parents/child/${id}`,
       method: "PUT",
-      body: { ...childData, password: newPassword },
+      body,
     });
 
     if (result && !result.error) {
       getChildData();
       showAlert({
-        icon: "/icons/successpng",
+        icon: "/icons/success.png",
         title: "Usuário editado com sucesso!",
         message:
           "Edição realizado com sucesso. Aguarde a atualização dos dados na tela.",
@@ -77,17 +111,18 @@ export default function Perfil() {
   };
 
   const handleDelete = async () => {
+    console.log("entrou aqui")
     const result = await request({
       endpoint: `/api/parents/child/${id}`,
       method: "DELETE",
     });
-    if (result && !result.error) {
+    if (result.status == 204 && !result.error) {
       getChildData();
       showAlert({
-        icon: "/icons/successpng",
+        icon: "/icons/success.png",
         title: "Conta excluída com sucesso.",
         message:
-          "Conta excluída com sucesso. Redirecionando para a página de login.",
+          "Conta excluída com sucesso. Redirecionando para a página inicial.",
         onClose: () => router.push("/"),
       });
       return;
@@ -123,11 +158,17 @@ export default function Perfil() {
               : "bg-white"
           } items-center w-full h-12 rounded-full gap-4 transition-all duration-300 ease-in-out pr-1 hover:cursor-pointer`}
           onClick={async () => {
+            const newRankingActive = !childData.rankingActive;
+
             setChildData({
               ...childData,
-              rankingActive: !childData.rankingActive,
+              rankingActive: newRankingActive,
             });
-            handleEdit();
+
+            handleEdit({
+              ...childData,
+              rankingActive: newRankingActive,
+            });
           }}
         >
           <div
@@ -190,9 +231,7 @@ export default function Perfil() {
                 </span>
                 <span className="text-[#4c4c4c]">
                   Lv.{" "}
-                  <span className="font-bold text-lg">
-                    {childData.points && Math.floor(childData.points / 100)}
-                  </span>
+                  <span className="font-bold text-lg">{levelData?.level}</span>
                 </span>
               </div>
               {modalOpen ? (
@@ -224,7 +263,11 @@ export default function Perfil() {
               )}
             </div>
 
-            <XPBar points={childData.points} />
+            <XPBar
+              progress={progressPercentage}
+              xp={levelData?.currentLevelXp}
+              toNext={levelData?.xpToNextLevel}
+            />
 
             <div className="flex flex-col gap-3">
               <CustomInput
@@ -242,6 +285,7 @@ export default function Perfil() {
                 label="Senha"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                isPassword
                 disabled={!editando}
                 selected={selectedInput === "senha"}
                 onClick={() => setSelectedInput("senha")}
@@ -309,11 +353,17 @@ export default function Perfil() {
                   <GradientSwitch
                     enabled={childData.audioActive}
                     onClick={async () => {
+                      const newAudioActive = !childData.audioActive;
+
                       setChildData({
                         ...childData,
-                        audioActive: !childData.audioActive,
+                        audioActive: newAudioActive,
                       });
-                      handleEdit();
+
+                      handleEdit({
+                        ...childData,
+                        audioActive: newAudioActive,
+                      });
                     }}
                   />
                 </div>

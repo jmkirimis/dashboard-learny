@@ -9,6 +9,11 @@ type Props = {
 
 export default function CustomPieChart({ data }: Props) {
   const CHART_COLORS = ["#F87171", "#60A5FA", "#34D399", "#FBBF24", "#FDE68A"];
+
+  const worldNames: Record<string, string> = {
+    WORLD_1: "Dino's Forest",
+  };
+
   return (
     <div className="flex items-center justify-center gap-4">
       <div className="h-40 w-40">
@@ -49,7 +54,7 @@ export default function CustomPieChart({ data }: Props) {
             />
 
             <span className="text-sm text-gray-600">
-              {entry.name} ({entry.value})
+              {worldNames[entry.name]} ({entry.value})
             </span>
           </div>
         ))}

@@ -35,7 +35,7 @@ export default function ContainerChildren({
 
   const handleSelect = async (child: Child) => {
     const result = await request({
-      endpoint: "/api/parents",
+      endpoint: "/api/parents/child/selected",
       method: "PUT",
       body: {
         selectedChild: child._id,
@@ -130,38 +130,34 @@ export default function ContainerChildren({
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <div className="w-full bg-[#EF5B6A] flex items-center justify-between px-4 py-3 rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-14 h-14 rounded-full bg-cover bg-center bg-no-repeat"
-                      style={{
-                        backgroundImage: `url(${
-                          child?.profilePicture
-                            ? child?.profilePicture
-                            : "/images/avatar.png"
-                        })`,
-                      }}
-                    />
-                    <div>
-                      <p className="text-lg font-bold text-white">
-                        {child?.name || "Joana"}
-                      </p>
+                {child && (
+                  <div className="w-full bg-[#EF5B6A] flex items-center justify-between px-4 py-3 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="w-14 h-14 rounded-full bg-cover bg-center bg-no-repeat"
+                        style={{
+                          backgroundImage: `url(${child.profilePicture || "images/avatar.png"})`,
+                        }}
+                      />
+                      <div>
+                        <p className="text-lg font-bold text-white">
+                          {child.name}
+                        </p>
+                      </div>
                     </div>
+                    <button
+                      className="hover:cursor-pointer bg-white rounded-full p-2"
+                      onClick={() => router.push(`/crianca/${child?._id}`)}
+                    >
+                      <Image
+                        src="/icons/config.png"
+                        alt="Editar"
+                        width={20}
+                        height={20}
+                      />
+                    </button>
                   </div>
-                  <button
-                    className="hover:cursor-pointer bg-white rounded-full p-2"
-                    onClick={() =>
-                      router.push(`/crianca/perfil?id=${child?._id}`)
-                    }
-                  >
-                    <Image
-                      src="/icons/config.png"
-                      alt="Editar"
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                </div>
+                )}
 
                 <div className="w-full">
                   {children
