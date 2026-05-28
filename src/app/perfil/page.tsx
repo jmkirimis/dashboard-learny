@@ -29,6 +29,8 @@ export default function Perfil() {
     name: user?.name || "",
     email: user?.email || "",
   });
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [newPassword, setNewPassword] = useState("");
   const [selectedInput, setSelectedInput] = useState<string | null>(null);
@@ -45,10 +47,40 @@ export default function Perfil() {
       return;
     }
 
+    let profilePicture = data.profilePicture || "";
+
+    if (selectedImageFile) {
+      const formData = new FormData();
+      formData.append("file", selectedImageFile);
+
+      const uploadResult = await request({
+        endpoint: "/api/upload",
+        method: "POST",
+        body: formData,
+        hasHeaders: true,
+      });
+
+      if (!uploadResult || uploadResult.error) {
+        showAlert({
+          icon: "/icons/error.png",
+          title: "Erro ao enviar imagem!",
+          message:
+            uploadResult?.message ||
+            "Ocorreu um erro ao enviar a imagem para o servidor",
+        });
+        return;
+      }
+
+      profilePicture = uploadResult.url;
+      setData({ ...data, profilePicture });
+      setSelectedImageFile(null);
+      setImagePreview(null);
+    }
+
     const result = await request({
       endpoint: `/api/parents/`,
       method: "PUT",
-      body: { ...data, password: newPassword },
+      body: { ...data, password: newPassword, profilePicture },
     });
 
     if (result && !result.error) {
@@ -112,10 +144,11 @@ export default function Perfil() {
           <div className={`flex relative items-center gap-4`}>
             <BtnSelecionaFoto
               type="edit"
-              image={data.profilePicture || ""}
-              onChange={(novaImagem: string | null) =>
-                setData({ ...data, profilePicture: novaImagem })
-              }
+              image={imagePreview || data.profilePicture || ""}
+              onChange={(file, preview) => {
+                setSelectedImageFile(file);
+                setImagePreview(preview || null);
+              }}
             />
             <div className="flex flex-col gap-1">
               <span className="font-bold text-2xl bg-linear-to-r from-[#d47489] to-[#7dc3ec] bg-clip-text text-transparent">

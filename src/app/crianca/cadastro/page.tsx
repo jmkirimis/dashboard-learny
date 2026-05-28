@@ -25,6 +25,8 @@ export default function CadastroCrianca() {
     name: "",
     birthDate: null,
   });
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const optionImages = [
     "aliens",
@@ -47,10 +49,38 @@ export default function CadastroCrianca() {
       return;
     }
 
+    let profilePicture = childData.profilePicture || "";
+
+    if (selectedImageFile) {
+      const formData = new FormData();
+      formData.append("file", selectedImageFile);
+
+      const uploadResult = await request({
+        endpoint: "/api/upload",
+        method: "POST",
+        body: formData,
+        hasHeaders: true,
+      });
+
+      if (!uploadResult || uploadResult.error) {
+        showAlert({
+          icon: "/icons/error.png",
+          title: "Erro ao enviar imagem!",
+          message:
+            uploadResult?.message ||
+            "Ocorreu um erro ao enviar a imagem para o servidor",
+        });
+        return;
+      }
+
+      profilePicture = uploadResult.url;
+      setChildData({ ...childData, profilePicture });
+    }
+
     const result = await request({
       endpoint: `/api/parents/children`,
       method: "POST",
-      body: { ...childData },
+      body: { ...childData, profilePicture },
     });
 
     if (result && !result.error) {
@@ -85,10 +115,11 @@ export default function CadastroCrianca() {
             <BtnSelectPicture
               type="add"
               variant="dark"
-              image={childData?.profilePicture || ""}
-              onChange={(novaImagem: string | null) =>
-                setChildData({ ...childData, profilePicture: novaImagem })
-              }
+              image={imagePreview || childData?.profilePicture || ""}
+              onChange={(file, preview) => {
+                setSelectedImageFile(file);
+                setImagePreview(preview || null);
+              }}
             />
 
             <div className="flex flex-col gap-3">

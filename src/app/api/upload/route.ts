@@ -23,18 +23,18 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(bytes);
 
     const fileExtension = file.name.split(".").pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
+    const key = `${process.env.UPLOAD_FOLDER}/${uuidv4()}.${fileExtension}`;
 
     await s3.send(
       new PutObjectCommand({
         Bucket: process.env.AWS_S3_BUCKET!,
-        Key: fileName,
+        Key: key,
         Body: buffer,
         ContentType: file.type,
       })
     );
 
-    const publicUrl = `${process.env.AWS_S3_BASE_URL}/${fileName}`;
+    const publicUrl = `${process.env.AWS_S3_BASE_URL}/${key}`;
 
     return NextResponse.json({ url: publicUrl }, { status: 200 });
   } catch (error) {

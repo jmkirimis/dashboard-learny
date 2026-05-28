@@ -28,6 +28,8 @@ export default function Cadastro() {
     email: "",
     birthDate: null,
   });
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [step, setStep] = useState(1);
 
@@ -41,10 +43,38 @@ export default function Cadastro() {
       return;
     }
 
+    let profilePicture = data.profilePicture || "";
+
+    if (selectedImageFile) {
+      const formData = new FormData();
+      formData.append("file", selectedImageFile);
+
+      const uploadResult = await request({
+        endpoint: "/api/upload",
+        method: "POST",
+        body: formData,
+        hasHeaders: true,
+      });
+
+      if (!uploadResult || uploadResult.error) {
+        showAlert({
+          icon: "/icons/error.png",
+          title: "Erro ao enviar imagem!",
+          message:
+            uploadResult?.message ||
+            "Ocorreu um erro ao enviar a imagem para o servidor",
+        });
+        return;
+      }
+
+      profilePicture = uploadResult.url;
+      setData({ ...data, profilePicture });
+    }
+
     const result = await request({
       endpoint: "/api/parents",
       method: "POST",
-      body: data,
+      body: { ...data, profilePicture },
     });
 
     if (result && !result.error) {
@@ -95,10 +125,11 @@ export default function Cadastro() {
         <div className="flex flex-col items-center w-full h-full">
           <BtnSelectPicture
             type="add"
-            image={data.profilePicture || ""}
-            onChange={(novaImagem: string | null) =>
-              setData({ ...data, profilePicture: novaImagem })
-            }
+            image={imagePreview || data.profilePicture || ""}
+            onChange={(file, preview) => {
+              setSelectedImageFile(file);
+              setImagePreview(preview || null);
+            }}
           />
           <div className="flex flex-col w-4/5 gap-3">
             <CustomInput

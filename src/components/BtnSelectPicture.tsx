@@ -1,15 +1,12 @@
 "use client";
 
-import { useRef } from "react";
-import { useApi } from "@/hooks/useApi";
-import { useCustomAlert } from "@/contexts/AlertContext";
-import Loading from "./Loading";
+import { useEffect, useRef } from "react";
 
 interface Props {
   type: "add" | "edit";
   variant?: "dark" | "light";
   image: string | null;
-  onChange: (newImage: string | null) => void;
+  onChange: (file: File | null, previewUrl?: string | null) => void;
 }
 
 export default function BtnSelectPicture({
@@ -18,48 +15,43 @@ export default function BtnSelectPicture({
   image,
   onChange,
 }: Props) {
-  const { loading, request } = useApi();
-  const { showAlert } = useCustomAlert();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
 
   const handleClick = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = async (
+  const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+    }
 
-    const result = await request({
-      endpoint: "/api/upload",
-      method: "POST",
-      body: formData,
-      hasHeaders: true,
-    });
+    const previewUrl = URL.createObjectURL(file);
+    previewUrlRef.current = previewUrl;
 
-    if (result && !result.error) {
-      if (onChange) onChange(result.url);
-    } else {
-      showAlert({
-        icon: "/icons/error.png",
-        title: "Erro ao enviar imagem!",
-        message:
-          result.message ||
-          "Ocorreu um erro ao enviar a imagem para o servidor",
-      });
+    onChange(file, previewUrl);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
   return (
     <div className="relative">
-      {loading ? (
-        <Loading />
-      ) : type === "edit" ? (
+      {type === "edit" ? (
         <button
           onClick={handleClick}
           className="w-40 h-40 flex items-end justify-end pr-2 pb-2 bg-cover bg-center bg-no-repeat rounded-lg hover:cursor-pointer"

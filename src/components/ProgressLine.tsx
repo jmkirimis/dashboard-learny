@@ -16,7 +16,7 @@ export default function ProgressLine({ step }: Props) {
   return (
     <div className="flex relative flex-col justify-center items w-full h-28 px-12 gap-2 bg-[#4c4c4c] rounded-md text-white shrink-0">
       <Image
-        src="/images/logo-com-contorno.png"
+        src="/images/logo-with-stroke.png"
         alt="Logo"
         width={48}
         height={48}
