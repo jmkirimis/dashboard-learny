@@ -41,9 +41,7 @@ const NotificationModal = ({
           Enviar notificação
         </h2>
 
-        <span className="mb-4 block text-sm text-zinc-500">
-          Tipo: {type}
-        </span>
+        <span className="mb-4 block text-sm text-zinc-500">Tipo: {type}</span>
 
         <textarea
           value={description}
@@ -115,7 +113,46 @@ export default function FeedbackContainer({
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
 
-  const openNotificationModal = (notificationType: string) => {
+  const openNotificationModal = async (notificationType: string) => {
+    if (notificationType === "positive") {
+      return;
+    }
+    
+    if (notificationType !== "comment") {
+      let autoDescription = "";
+
+      if (notificationType === "love") {
+        autoDescription = "Parabéns filho, continue assim. Amo você";
+      }
+
+      const result = await request({
+        endpoint: `/api/parents/child/${child?._id}/notifications`,
+        method: "POST",
+        body: {
+          type: notificationType,
+          description: autoDescription,
+          phaseCode,
+        },
+      });
+
+      if (result && !result.error) {
+        showAlert({
+          icon: "/icons/success.png",
+          title: "Notificação enviada com sucesso!",
+          message:
+            result.message || "Sua notificação foi registrada com sucesso",
+        });
+      } else {
+        showAlert({
+          icon: "/icons/error.png",
+          title: "Erro ao enviar notificação!",
+          message: result?.message || "Ocorreu um erro ao enviar a notificação",
+        });
+      }
+
+      return;
+    }
+
     setType(notificationType);
     setDescription("");
     setShowModal(true);
@@ -140,9 +177,7 @@ export default function FeedbackContainer({
       showAlert({
         icon: "/icons/success.png",
         title: "Notificação enviada com sucesso!",
-        message:
-          result.message ||
-          "Sua notificação foi registrada com sucesso",
+        message: result.message || "Sua notificação foi registrada com sucesso",
       });
 
       closeNotificationModal();
@@ -150,9 +185,7 @@ export default function FeedbackContainer({
       showAlert({
         icon: "/icons/error.png",
         title: "Erro ao enviar notificação!",
-        message:
-          result?.message ||
-          "Ocorreu um erro ao enviar a notificação",
+        message: result?.message || "Ocorreu um erro ao enviar a notificação",
       });
     }
   };

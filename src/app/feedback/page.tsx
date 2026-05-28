@@ -15,7 +15,7 @@ export default function Feedback() {
         <div className="flex relative flex-col rounded-md text-[#4c4c4c] shrink-0">
           <span className="text-sm">Feedback de:</span>
           <span className="font-bold text-xl">{child?.name}</span>
-          <hr className="w-50 mt-1 text-[#4c4c4c]" />
+          <hr className="w-2/3 mt-1 text-[#4c4c4c]" />
         </div>
 
         {/* Mundos */}
@@ -32,7 +32,7 @@ export default function Feedback() {
                 </h1>
 
                 {/* Lista horizontal */}
-                <div className="w-full overflow-x-auto">
+                <div className="custom-scrollbar w-full overflow-x-auto">
                   <div className="flex flex-row gap-4 min-w-max px-1 pt-1 pb-4">
                     {world.completedPhases.map((phase: PhaseCompleted, index: number) => (
                       <FeedbackContainer
