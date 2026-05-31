@@ -82,16 +82,16 @@ export default function Dashboard() {
   }, [child, getChildActivity, getCharactersCatalog]);
 
   return (
-      <div className="flex flex-1 flex-col overflow-hidden px-14 py-6">
+      <div className="flex flex-1 flex-col overflow-hidden px-14 py-2">
         {/* HEADER */}
-        <div className="mb-6 flex flex-col gap-1 text-[#4c4c4c]">
-          <span className="text-sm">Feedback de:</span>
+        <div className="mb-6 flex flex-col gap-0.5 text-[#4c4c4c]">
+          <span className="text-sm font-medium">Feedback para:</span>
           <span className="text-2xl font-bold">{child?.name}</span>
-          <hr className="w-2/3 mt-1 text-[#4c4c4c]" />
+          <hr className="max-w-1/2 mt-1 text-[#bebebe]" />
         </div>
 
         {/* STATUS */}
-        <div className="mb-3 grid shrink-0 grid-cols-3 gap-4">
+        <div className="mb-3.5 grid shrink-0 grid-cols-3 gap-4">
           <DashboardItem
             width="100%"
             text="Pontos totais"
@@ -125,13 +125,13 @@ export default function Dashboard() {
             <div
               className="
                 flex flex-col rounded-2xl
-                bg-white p-6
-                shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]
+                bg-white p-5
+                shadow-[inset_0_0_6px_rgba(0,0,0,0.3)]
               "
             >
               <span
                 className="
-                  mb-4 block text-center
+                  mb-5 block text-center
                   font-bold text-[#4c4c4c]
                 "
               >
@@ -147,13 +147,14 @@ export default function Dashboard() {
             <div
               className="
                 flex flex-col rounded-2xl
-                bg-white p-6
-                shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]
+                bg-white p-3
+                items-center justify-center
+                shadow-[inset_0_0_6px_rgba(0,0,0,0.3)]
               "
             >
               <span
                 className="
-                  mb-4 block text-center
+                  mt-2 block text-center
                   font-bold text-[#4c4c4c]
                 "
               >
@@ -171,7 +172,7 @@ export default function Dashboard() {
             className="
               flex flex-col rounded-2xl
               bg-white py-6 px-12
-              shadow-[inset_0_0_10px_rgba(0,0,0,0.15)]
+              shadow-[inset_0_0_6px_rgba(0,0,0,0.3)]
             "
           >
             <span

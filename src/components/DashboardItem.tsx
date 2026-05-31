@@ -25,7 +25,7 @@ export default function DashboardItem({
                 flex justify-between items-center rounded-2xl px-8 py-3
                 ${
                   type != "inner"
-                    ? "shadow-[inset_0_0_15px_rgba(0,0,0,0.3)]"
+                    ? "shadow-[inset_0_0_6px_rgba(0,0,0,0.3)]"
                     : "shadow-[0_0_6px_rgba(150,150,150,0.6)]"
                 }
               `}

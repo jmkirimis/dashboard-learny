@@ -10,7 +10,7 @@ interface Props {
 export default function ScoreCard({color, label, value, icon}: Props){
   return(
     <div 
-      className="flex relative flex-col items-center justify-center w-26 px-4 py-2 border-5 rounded-2xl"
+      className="flex relative flex-col items-center justify-center w-26 px-6 py-3 border-3 rounded-2xl"
       style={{borderColor: color}}
     >
       <span 
