@@ -65,52 +65,65 @@ export default function Navbar() {
               </span>
             </div>
           ) : (
-            <a className="flex items-center gap-3 p-1 rounded-md transition text-sm">
-              {
+            <div className="flex flex-col items-center gap-1.5 p-1 rounded-md transition text-sm">
                 <div
-                  className="w-10 h-10 flex items-end justify-end pr-2 pb-2 bg-[url('/images/avatar-big.png')] bg-contain bg-no-repeat rounded-full mb-4"
+                  className="w-12 h-12 flex items-end justify-end bg-contain bg-no-repeat rounded-full"
+                  style={{ backgroundImage: `url(${user?.profilePicture || "/images/avatar-big.png"})` }}
                 />
-              }
-            </a>
+                <div
+                  className={`w-11 h-11 bg-cover bg-center bg-no-repeat rounded-full ${child?.profilePicture && "border-2 border-white"} hover:cursor-pointer`}
+                  style={{ backgroundImage: `url(${child ? child.profilePicture || "/images/avatar.png" : "/images/add.png"})` }}
+                />
+            </div>
           )}
-          <BtnNavbar
-            icon={"statistic.png"}
-            text="Estatística"
-            isNavbarOpen={isOpen}
-            selected={pathname === "/dashboard"}
-            onClick={() => router.push("/dashboard")}
-          />
-          <BtnNavbar
-            icon={"notification.png"}
-            text="Feedback"
-            isNavbarOpen={isOpen}
-            selected={pathname === "/feedback"}
-            bgColor="#6CD2FF"
-            onClick={() => router.push("/feedback")}
-          />
-          <BtnNavbar
-            icon={"profile-navbar.png"}
-            text="Perfil"
-            isNavbarOpen={isOpen}
-            selected={pathname === "/perfil"}
-            bgColor="#80D25B"
-            onClick={() => router.push("/perfil")}
-          />
-          <BtnNavbar
-            icon={"config.png"}
-            text="Configurações"
-            isNavbarOpen={isOpen}
-            selected={pathname == "/configuracoes"}
-            bgColor="#FFB300"
-            onClick={() => router.push("/configuracoes")}
-          />
-          {isOpen && <hr className="text-zinc-400 rounded-md my-3" />}
-          <BtnNavbar
-            icon="leave.png"
-            text="Sair"
-            isNavbarOpen={isOpen}
-            onClick={logout}
-          />
+          <div className={`flex flex-col w-full ${isOpen ? "gap-3" : "mt-3"}`}>
+            <BtnNavbar
+              icon={"home-whithout-bg.png"}
+              text="Home"
+              isNavbarOpen={isOpen}
+              selected={pathname === "/home"}
+              bgColor="#EF5B6A"
+              onClick={() => router.push("/home")}
+            />
+            <BtnNavbar
+              icon={"statistic.png"}
+              text="Estatística"
+              isNavbarOpen={isOpen}
+              selected={pathname === "/dashboard"}
+              onClick={() => router.push("/dashboard")}
+            />
+            <BtnNavbar
+              icon={"notification.png"}
+              text="Feedback"
+              isNavbarOpen={isOpen}
+              selected={pathname === "/feedback"}
+              bgColor="#6CD2FF"
+              onClick={() => router.push("/feedback")}
+            />
+            <BtnNavbar
+              icon={"profile-navbar.png"}
+              text="Perfil"
+              isNavbarOpen={isOpen}
+              selected={pathname === "/perfil"}
+              bgColor="#80D25B"
+              onClick={() => router.push("/perfil")}
+            />
+            <BtnNavbar
+              icon={"config.png"}
+              text="Configurações"
+              isNavbarOpen={isOpen}
+              selected={pathname == "/configuracoes"}
+              bgColor="#FFB300"
+              onClick={() => router.push("/configuracoes")}
+            />
+            {isOpen && <hr className="text-zinc-400 rounded-md my-3" />}
+            <BtnNavbar
+              icon="leave.png"
+              text="Sair"
+              isNavbarOpen={isOpen}
+              onClick={logout}
+            />
+          </div>
         </nav>
         {modalOpen && 
           <ContainerChildren 

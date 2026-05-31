@@ -129,6 +129,7 @@ export default function ContainerChildren({
                     onClick={() => {
                       router.push("/crianca/cadastro");
                       router.refresh();
+                      onClose();
                     }}
                     className="flex items-center justify-center"
                   >
@@ -155,7 +156,10 @@ export default function ContainerChildren({
                     </div>
                     <button
                       className="hover:cursor-pointer bg-white rounded-full p-2"
-                      onClick={() => router.push(`/crianca/${child?._id}`)}
+                      onClick={() => {
+                        router.push(`/crianca/${child?._id}`)
+                        onClose();
+                      }}
                     >
                       <Image
                         src="/icons/config.png"
@@ -195,6 +199,7 @@ export default function ContainerChildren({
                     onClick={() => {
                       router.push("/crianca/cadastro");
                       router.refresh();
+                      onClose();
                     }}
                   >
                     <div className="flex items-center justify-center">

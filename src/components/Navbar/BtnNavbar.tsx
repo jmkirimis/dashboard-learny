@@ -19,11 +19,12 @@ export default function BtnNavbar({
 }: Props) {
   return (
     <button
-      className={`flex items-center hover:cursor-pointer ${text == "Estatística" && selected ? "bg-linear-to-r from-[#8f6579] to-[#519ebf]" : ""} ${
-        isNavbarOpen
-          ? "border border-zinc-200 rounded-md p-2 shadow-[0_0_4px_rgba(150,150,150,0.4)] hover:shadow-[0_0_6px_rgba(100,100,100,0.6)]"
-          : "justify-center"
-      }`}
+      className={`
+        flex items-center py-2 hover:cursor-pointer border border-zinc-200 
+        rounded-md shadow-[0_0_4px_rgba(150,150,150,0.4)] hover:shadow-[0_0_6px_rgba(100,100,100,0.6)]
+        ${text == "Estatística" && selected ? "bg-linear-to-r from-[#8f6579] to-[#519ebf]" : ""}
+        ${isNavbarOpen ? "px-3" : "justify-center m-1 py-2"}
+      `}
       style={{
         backgroundColor: selected ? bgColor : "",
       }}
