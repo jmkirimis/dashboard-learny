@@ -14,6 +14,18 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
+// Valida o formato mínimo esperado dos dados de usuário salvos no localStorage.
+// Se o objeto não bater com o shape esperado, é tratado como dado corrompido/conflitante.
+function isValidUser(value: unknown): value is User {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.username === "string" &&
+    typeof candidate.name === "string" &&
+    (candidate.type === "parent" || candidate.type === "child")
+  );
+}
+
 export function UserProvider({ children }: { children: ReactNode; }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -46,18 +58,44 @@ export function UserProvider({ children }: { children: ReactNode; }) {
     setShowLogoutModal(false);
   }, []);
 
+  // Limpa qualquer vestígio de sessão (cookie + localStorage) e volta para o login.
+  // Usado quando os dados do localStorage entram em conflito/corrupção.
+  const clearCorruptedSession = useCallback(() => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("child");
+    // Limpa o cookie httpOnly no servidor
+    fetch("/api/logout", { method: "POST" }).catch(() => {});
+    setUser(null);
+    setChild(null);
+    router.replace("/");
+  }, [router]);
+
   // Recupera usuário e criança salvos (ex: após refresh)
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    try {
+      const storedUser = localStorage.getItem("user");
+      const storedChild = localStorage.getItem("child");
 
-    const storedChild = localStorage.getItem("child");
-    if (storedChild) {
-      setChild(JSON.parse(storedChild));
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (!isValidUser(parsedUser)) {
+          throw new Error("Dados de usuário em formato inválido");
+        }
+        setUser(parsedUser);
+      }
+
+      // A criança é opcional; só falha se o JSON estiver corrompido
+      if (storedChild) {
+        setChild(JSON.parse(storedChild));
+      }
+    } catch (err) {
+      console.error(
+        "Conflito nos dados de sessão (localStorage). Encerrando sessão e redirecionando para login.",
+        err,
+      );
+      clearCorruptedSession();
     }
-  }, []);
+  }, [clearCorruptedSession]);
 
   // Salva usuário no localStorage quando mudar
   useEffect(() => {
