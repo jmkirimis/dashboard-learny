@@ -19,10 +19,11 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 function isValidUser(value: unknown): value is User {
   if (!value || typeof value !== "object") return false;
   const candidate = value as Record<string, unknown>;
+  // O usuário salvo no contexto vem de /api/parents, que não retorna `type`.
+  // Validar só os campos que de fato existem evita derrubar a sessão no refresh.
   return (
     typeof candidate.username === "string" &&
-    typeof candidate.name === "string" &&
-    (candidate.type === "parent" || candidate.type === "child")
+    typeof candidate.name === "string"
   );
 }
 

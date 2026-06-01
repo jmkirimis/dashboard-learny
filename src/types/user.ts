@@ -7,7 +7,7 @@ export interface User {
   name: string;
   email: string | null;
   selectedChild: string | null;
-  type: "parent" | "child";
+  type?: "parent" | "child";
   password?: string;
   birthDate?: Dayjs | null;
 };
