@@ -49,21 +49,9 @@ export function getBarChartData(activities: Activity[]) {
 }
 
 export function getPieChartData(activities: Activity[]) {
-  const now = new Date();
-
-  // apenas atividades do mês atual
-  const monthActivities = activities.filter((activity) => {
-    const date = new Date(activity.createdAt.$date);
-
-    return (
-      date.getMonth() === now.getMonth() &&
-      date.getFullYear() === now.getFullYear()
-    );
-  });
-
   const grouped: Record<string, number> = {};
 
-  monthActivities.forEach((activity) => {
+  activities.forEach((activity) => {
     const world = activity.data.worldCode || "OUTROS";
 
     grouped[world] = (grouped[world] || 0) + 1;

@@ -58,18 +58,7 @@ describe("getBarChartData", () => {
 });
 
 describe("getPieChartData", () => {
-  const FIXED_NOW = new Date("2026-05-18T12:00:00.000Z");
-
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(FIXED_NOW);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("agrupa atividades do mês atual por worldCode", () => {
+  it("agrupa atividades por worldCode", () => {
     const activities = [
       makeActivity({ date: "2026-05-01T10:00:00.000Z", worldCode: "WORLD_1" }),
       makeActivity({ date: "2026-05-02T10:00:00.000Z", worldCode: "WORLD_1" }),
@@ -89,13 +78,13 @@ describe("getPieChartData", () => {
     expect(data).toEqual([{ name: "OUTROS", value: 1 }]);
   });
 
-  it("ignora atividades de outros meses", () => {
+  it("inclui atividades de outros meses no agrupamento", () => {
     const activities = [
       makeActivity({ date: "2026-04-30T23:59:59.000Z", worldCode: "WORLD_1" }),
       makeActivity({ date: "2025-05-15T10:00:00.000Z", worldCode: "WORLD_1" }),
     ];
 
     const data = getPieChartData(activities);
-    expect(data).toEqual([]);
+    expect(data).toEqual([{ name: "WORLD_1", value: 2 }]);
   });
 });
