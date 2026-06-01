@@ -14,12 +14,17 @@ export default function SelectedCharacter({
   characterPoints,
 }: Props) {
 
-  const progressLevel = (characterPoints / getCharacterXpToNext(level)) * 100
+  const progressLevel = getCharacterProgressLevel(characterPoints, level);
 
   function getCharacterXpToNext(level: number) {
     return Math.floor(
       80 + 45 * Math.pow(level - 1, 1.4)
     );
+  }
+
+  function getCharacterProgressLevel(points: number, level: number) {
+    const percentage = (points / getCharacterXpToNext(level)) * 100;
+    return Math.min(100, Number(percentage.toFixed(0)));
   }
 
   return (
