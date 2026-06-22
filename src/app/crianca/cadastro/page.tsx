@@ -86,7 +86,7 @@ export default function CadastroCrianca() {
     if (result && !result.error) {
       getChildData();
       showAlert({
-        icon: "/icons/successpng",
+        icon: "/icons/success.png",
         title: "Dependente cadastrado com sucesso!",
         message: "Cadastro realizado com sucesso!",
         onClose: () => router.refresh(),
@@ -139,6 +139,7 @@ export default function CadastroCrianca() {
                 onChange={(e) =>
                   setChildData({ ...childData, password: e.target.value })
                 }
+                type="password"
                 selected={selectedInput === "senha"}
                 onClick={() => setSelectedInput("senha")}
               />
